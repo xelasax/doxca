@@ -1,0 +1,2037 @@
+openapi: 3.1.0
+x-stoplight:
+  id: vtwxqkqsc0x5a
+info:
+  title: API Endpoints
+  version: '1.0'
+  description: Orbital API Documentation
+servers:
+  - url: 'https://api.getorbital.io'
+    description: PROD
+  - url: 'https://pp.api.getorbital.io'
+    description: PRE-PROD
+tags:
+  - name: Pay Ins
+    description: |
+      Pay ins consist of two payment processing methods: Rapid Deposit and Invoice.
+
+      Merchants can integrate with the Hosted Payment Pages which offer a turnkey, ready-built, customisable user interface complete with all the necessary screens and components needed for the end-user's experience. Our HPPs utilise the Invoice payment processing method.
+
+      Alternatively, merchants can integrate via API and build their own user interface for their customers. In this case, they can choose between the Rapid Deposit or the Invoice payment processing method.
+  - name: Hosted Payment Pages (HPP)
+    description: |
+      Orbital offers a self-hosted payment page (HPP) for merchants who wish to integrate without having to develop any UI on their platforms.
+
+      We offer two types of HPPs:
+
+      HPP Deposit- this integration offers a user experience appropriate for merchant platforms where end-users are depositing funds on their platform account in order to subsequently use those funds on that platform.
+      HPP Payment- this solution is more relevant to merchants who sell a good or service for a fixed price and their end-user must make a payment to complete the purchase.
+      Below you can find the HTTP request, response samples and documentation on creating a new invoice through the HPP Deposit and HPP Payment.
+
+      Keep in mind that this API will return an HTML page, which should be rendered for the client and will act as a redirection to the payment page.
+  - name: API
+    description: |
+      For those who want to implement their own Pay in user interface, Orbital provides a RESTful API.
+
+      Below you can find the HTTP request, response samples and documentation to integrate via one of our API integrations: Rapid Deposit Method or Invoice Method.
+  - name: Pay Outs
+    description: |
+      In order to initiate pay outs, Orbital provides a single API method, which can be easily adapted to merchant needs.
+  - name: Rates
+    description: |
+      In order to initiate pay outs, Orbital provides a single API method, which can be easily adapted to merchant needs.
+  - name: Reporting
+    description: |
+      In order to initiate pay outs, Orbital provides a single API method, which can be easily adapted to merchant needs.
+  - name: Payments
+    description: |
+      In order to initiate pay outs, Orbital provides a single API method, which can be easily adapted to merchant needs.
+  - name: Webhook Notifications
+    description: |
+      Depending on the integration, you will need to look at the relevant section below:
+
+      Hosted Payment Pages & API Invoice (these two types of integrations will have the same webhook notifications)
+      - API Rapid Deposit
+      - Pay outs
+      - Sample code to verify the webhook signature
+paths:
+  /deposit/receiving-address:
+    post:
+      summary: Rapid Deposit
+      description: |
+        This endpoint enables merchants to easily generate a cryptocurrency deposit address for their customers.
+        Simply provide details such as the currency, target currency, cashier currency, external ID, notification URL, and recipient information.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currency:
+                  type: string
+                  description: The cryptocurrency type being deposited.
+                  enum:
+                    - USDT
+                    - USDC
+                    - ETH
+                    - BTC
+                    - LTC
+                    - BCH
+                  example: USDT
+                mainCurrency:
+                  type: string
+                  description: |-
+                    The main currency associated with the deposit. *Required* field only for the following currencies: USDT, USDC.
+                    For __USDT__, mainCurrency should be set as __ETH__, __TRX__, __BNB__.
+                    For __USDC__, mainCurrency should be set as __ETH__, __SOL__, __BNB__.
+                  enum:
+                    - ETH
+                    - TRX
+                    - SOL
+                    - BNB
+                  example: ETH
+                targetCurrency:
+                  type: string
+                  description: |-
+                    The currency to which the deposit will be converted.
+                    If _targetCurrency_ is set in a fiat currency, the invoice will contain an FX contract, and the funds will be auto-converted and land in a fiat account of the merchant's choice.
+                  enum:
+                    - USD
+                    - GBP
+                    - EUR
+                cashierCurrency:
+                  type: string
+                  description: Currency used in the cashier account.
+                externalId:
+                  type: string
+                  description: External ID associated with the deposit.
+                notifyUrl:
+                  type: string
+                  description: |-
+                    URL to receive payment notifications and updates.
+                    A Webhook URL to which Orbital will send the transaction status notification. The different statuses are included in the Webook Notifications section.
+                firstName:
+                  type: string
+                  description: Recipient's first name.
+                lastName:
+                  type: string
+                  description: Recipient's last name.
+                countryOfResidence:
+                  type: string
+                  description: Country where the recipient resides.
+                  enum:
+                    - AF
+                    - AX
+                    - AL
+                    - DZ
+                    - AS
+                    - AD
+                    - AO
+                    - AI
+                    - AQ
+                    - AG
+                    - AR
+                    - AM
+                    - AW
+                    - AU
+                    - AT
+                    - AZ
+                    - BS
+                    - BH
+                    - BD
+                    - BB
+                    - BY
+                    - BE
+                    - BZ
+                    - BJ
+                    - BM
+                    - BT
+                    - BO
+                    - BQ
+                    - BA
+                    - BW
+                    - BV
+                    - BR
+                    - IO
+                    - BN
+                    - BG
+                    - BF
+                    - BI
+                    - CV
+                    - KH
+                    - CM
+                    - CA
+                    - KY
+                    - CF
+                    - TD
+                    - CL
+                    - CN
+                    - CX
+                    - CC
+                    - CO
+                    - KM
+                    - CG
+                    - CD
+                    - CK
+                    - CR
+                    - CI
+                    - HR
+                    - CU
+                    - CW
+                    - CY
+                    - CZ
+                    - DK
+                    - DJ
+                    - DM
+                    - DO
+                    - EC
+                    - EG
+                    - SV
+                    - GQ
+                    - ER
+                    - EE
+                    - SZ
+                    - ET
+                    - FK
+                    - FO
+                    - FJ
+                    - FI
+                    - FR
+                    - GF
+                    - PF
+                    - TF
+                    - GA
+                    - GM
+                    - GE
+                    - DE
+                    - GH
+                    - GI
+                    - GR
+                    - GL
+                    - GD
+                    - GP
+                    - GU
+                    - GT
+                    - GG
+                    - GN
+                    - GW
+                    - GY
+                    - HT
+                    - HM
+                    - VA
+                    - HN
+                    - HK
+                    - HU
+                    - IS
+                    - IN
+                    - ID
+                    - IR
+                    - IQ
+                    - IE
+                    - IM
+                    - IL
+                    - IT
+                    - JM
+                    - JP
+                    - JE
+                    - JO
+                    - KZ
+                    - KE
+                    - KI
+                    - KP
+                    - KR
+                    - KW
+                    - KG
+                    - LA
+                    - LV
+                    - LB
+                    - LS
+                    - LR
+                    - LY
+                    - LI
+                    - LT
+                    - LU
+                    - MO
+                    - MK
+                    - MG
+                    - MW
+                    - MY
+                    - MV
+                    - ML
+                    - MT
+                    - MH
+                    - MQ
+                    - MR
+                    - MU
+                    - YT
+                    - MX
+                    - FM
+                    - MD
+                    - MC
+                    - MN
+                    - ME
+                    - MS
+                    - MA
+                    - MZ
+                    - MM
+                    - NA
+                    - NR
+                    - NP
+                    - NL
+                    - NC
+                    - NZ
+                    - NI
+                    - NE
+                    - NG
+                    - NU
+                    - NF
+                    - MP
+                    - 'NO'
+                    - OM
+                    - PK
+                    - PW
+                    - PS
+                    - PA
+                    - PG
+                    - PY
+                    - PE
+                    - PH
+                    - PN
+                    - PL
+                    - PT
+                    - PR
+                    - QA
+                    - RE
+                    - RO
+                    - RU
+                    - RW
+                    - BL
+                    - SH
+                    - KN
+                    - LC
+                    - MF
+                    - PM
+                    - VC
+                    - WS
+                    - SM
+                    - ST
+                    - SA
+                    - SN
+                    - RS
+                    - SC
+                    - SL
+                    - SG
+                    - SX
+                    - SK
+                    - SI
+                    - SB
+                    - SO
+                    - ZA
+                    - GS
+                    - SS
+                    - ES
+                    - LK
+                    - SD
+                    - SR
+                    - SJ
+                    - SE
+                    - CH
+                    - SY
+                    - TW
+                    - TJ
+                    - TZ
+                    - TH
+                    - TL
+                    - TG
+                    - TK
+                    - TO
+                    - TT
+                    - TN
+                    - TR
+                    - TM
+                    - TC
+                    - TV
+                    - UG
+                    - UA
+                    - AE
+                    - GB
+                    - US
+                    - UM
+                    - UY
+                    - UZ
+                    - VU
+                    - VE
+                    - VN
+                    - VG
+                    - VI
+                    - WF
+                    - EH
+                    - YE
+                    - ZM
+                    - ZW
+                nameType:
+                  type: string
+                  description: 'Type of name used for the recipient (e.g., alias).'
+                  enum:
+                    - alias
+                    - legal
+                    - birth
+                    - maiden
+                    - other
+            examples:
+              Sample 1:
+                value:
+                  currency: USDT
+                  mainCurrency: ETH
+                  targetCurrency: USD
+                  cashierCurrency: CNY
+                  externalId: example_external_id
+                  notifyUrl: 'https://example.com/notify'
+                  firstName: John
+                  lastName: Doe
+                  countryOfResidence: AF
+                  nameType: alias
+              Sample 2:
+                value:
+                  currency: BTC
+                  targetCurrency: USD
+                  cashierCurrency: CNY
+                  externalId: example_external_id
+                  notifyUrl: 'https://example.com/notify'
+                  firstName: John
+                  lastName: Doe
+                  countryOfResidence: AF
+                  nameType: alias
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: Status of the response.
+                  data:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                        description: Generated cryptocurrency deposit address.
+                      externalId:
+                        type: string
+                        description: External ID associated with the deposit.
+                      id:
+                        type: string
+                        description: Internal ID of the generated address.
+                      mainCurrency:
+                        type: string
+                        description: Main currency associated with the deposit.
+                      targetCurrency:
+                        type: string
+                        description: Currency for conversion.
+                      cashierCurrency:
+                        type: string
+                        description: Currency used in the cashier account.
+                      firstName:
+                        type: string
+                        description: Recipient's first name.
+                      lastName:
+                        type: string
+                        description: Recipient's last name.
+                      countryOfResidence:
+                        type: string
+                        description: Recipient's country of residence.
+                      nameType:
+                        type: string
+                        description: 'Type of name used for the recipient (e.g., alias).'
+                    description: Details of the generated receiving address.
+                  message:
+                    type: string
+                    description: Result message of the operation.
+              examples:
+                Example 1:
+                  value:
+                    status: success
+                    data:
+                      address: '0x74C9C05e269d54B88873836A2aa3d0D6a55CC890'
+                      externalId: ba1e8000-d1e3-4e80-a1eb-b6ed85a94643
+                      id: a80fc2ae-563a-4cf9-845b-3833229299ea
+                      mainCurrency: BTC
+                      targetCurrency: GBP
+                      cashierCurrency: CNY
+                      firstName: John
+                      lastName: Smith
+                      countryOfResidence: IN
+                      nameType: alias
+                    message: Address created successfully
+      tags:
+        - Pay Ins
+      operationId: rapid-deposite
+  /crypto/deposit/invoice:
+    post:
+      summary: Invoice
+      description: |
+        To facilitate cryptocurrency deposits, merchants can use this endpoint to generate deposit invoices.
+        Users need to provide details such as the currency, amount, external ID, redirect URL, notification URL, and recipient information.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currency:
+                  type: string
+                  description: The cryptocurrency type being transferred.
+                  enum:
+                    - USDT
+                    - USDC
+                    - ETH
+                    - BTC
+                    - LTC
+                    - BCH
+                  example: USDT
+                mainCurrency:
+                  type: string
+                  description: |-
+                    The main currency associated with the deposit. *Required* field only for the following currencies: USDT, USDC.
+                    For __USDT__, mainCurrency should be set as __ETH__, __TRX__, __BNB__.
+                    For __USDC__, mainCurrency should be set as __ETH__, __SOL__. __BNB__
+                  enum:
+                    - ETH
+                    - TRX
+                    - SOL
+                    - BNB
+                  example: ETH
+                targetCurrency:
+                  type: string
+                  description: |-
+                    The currency to which the deposit will be converted.
+                    If _targetCurrency_ is set in a fiat currency, the invoice will contain an FX contract, and the funds will be auto-converted and land in a fiat account of the merchant's choice.
+                  enum:
+                    - USD
+                    - GBP
+                    - EUR
+                targetAmount:
+                  type: string
+                  description: The amount of the target currency for the deposit.
+                cashierAmount:
+                  type: string
+                  description: The amount of the cashier's currency for the deposit.
+                cashierCurrency:
+                  type: string
+                  description: The currency used by the cashier for the deposit.
+                  enum:
+                    - CNY
+                    - THB
+                    - VND
+                    - MYR
+                    - IDR
+                    - INR
+                    - BRL
+                    - KRW
+                    - AED
+                    - AUD
+                    - CAD
+                    - CHF
+                    - HKD
+                    - SGD
+                    - JPY USD
+                    - GBP
+                    - EUR
+                externalId:
+                  type: string
+                  description: The external ID associated with the deposit invoice.
+                redirectUrl:
+                  type: string
+                  description: The URL to redirect the user after completing the deposit.
+                notifyUrl:
+                  type: string
+                  description: The URL to receive notifications about the deposit.
+                firstName:
+                  type: string
+                  description: The first name of the recipient.
+                lastName:
+                  type: string
+                  description: The last name of the recipient.
+                countryOfResidence:
+                  type: string
+                  description: The country of residence of the recipient.
+                nameType:
+                  type: string
+                  description: 'The type of name used for the recipient (e.g., alias).'
+              required:
+                - currency
+                - externalId
+                - notifyUrl
+                - firstName
+                - lastName
+                - countryOfResidence
+                - nameType
+            examples:
+              Sample 1:
+                value:
+                  currency: USDT
+                  mainCurrency: ETH
+                  targetCurrency: USD
+                  targetAmount: '100'
+                  cashierAmount: '500'
+                  cashierCurrency: CNY
+                  externalId: abc123
+                  redirectUrl: 'https://example.com/redirect'
+                  notifyUrl: 'https://example.com/notify'
+                  firstName: John
+                  lastName: Doe
+                  countryOfResidence: US
+                  nameType: legal
+              Sample 2:
+                value:
+                  currency: BTC
+                  targetCurrency: USD
+                  targetAmount: '100'
+                  cashierAmount: '500'
+                  cashierCurrency: CNY
+                  externalId: abc123
+                  redirectUrl: 'https://example.com/redirect'
+                  notifyUrl: 'https://example.com/notify'
+                  firstName: John
+                  lastName: Doe
+                  countryOfResidence: US
+                  nameType: legal
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response.
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: 'The status of the deposit invoice (e.g., initiated).'
+                      type:
+                        type: string
+                        description: 'The type of transaction (e.g., deposit).'
+                      subType:
+                        type: string
+                        description: 'The subtype of the transaction (e.g., invoice).'
+                      id:
+                        type: string
+                        description: The internal ID of the deposit invoice.
+                      sourceCurrency:
+                        type: string
+                        description: The currency from which the deposit amount will be deducted.
+                      sourceAmount:
+                        type: string
+                        description: The amount to be deposited in the source currency.
+                      targetCurrency:
+                        type: string
+                        description: The currency to which the deposit will be made.
+                      targetAmount:
+                        type: string
+                        description: The amount to be deposited in the target currency.
+                      mainCurrency:
+                        type: string
+                        description: The main currency associated with the deposit invoice.
+                      merchantId:
+                        type: string
+                        description: The merchant ID associated with the deposit invoice.
+                      invoiceCreated:
+                        type: string
+                        format: date-time
+                        description: The timestamp indicating when the invoice was created.
+                      invoiceExpires:
+                        type: string
+                        format: date-time
+                        description: The timestamp indicating when the invoice expires.
+                      address:
+                        type: string
+                        description: The cryptocurrency address associated with the deposit invoice.
+                      addressId:
+                        type: string
+                        description: The internal ID of the cryptocurrency address.
+                      redirectUrl:
+                        type: string
+                        description: The URL to redirect the user after completing the deposit.
+                      notifyUrl:
+                        type: string
+                        description: The URL to receive notifications about the deposit.
+                      rates:
+                        type: array
+                        items:
+                          type: object
+                        description: Array of rate objects (if applicable).
+                      fees:
+                        type: array
+                        items:
+                          type: object
+                        description: Array of fee objects (if applicable).
+                      mode:
+                        type: string
+                        description: 'The mode of the deposit invoice (e.g., lenient).'
+                      firstName:
+                        type: string
+                        description: The first name of the recipient.
+                      lastName:
+                        type: string
+                        description: The last name of the recipient.
+                      countryOfResidence:
+                        type: string
+                        description: The country of residence of the recipient.
+                      nameType:
+                        type: string
+                        description: 'The type of name used for the recipient (e.g., alias).'
+                    description: Object containing deposit invoice details.
+                  message:
+                    type: string
+                    description: A message indicating the result of the deposit invoice creation operation.
+              examples:
+                Sample 1:
+                  value:
+                    status: success
+                    data:
+                      status: completed
+                      type: deposit
+                      subType: invoice
+                      id: abc123
+                      sourceCurrency: USDT
+                      sourceAmount: '100'
+                      targetCurrency: USD
+                      targetAmount: '100'
+                      mainCurrency: ETH
+                      merchantId: xyz789
+                      invoiceCreated: '2023-08-24T14:15:22Z'
+                      invoiceExpires: '2023-08-24T14:15:22Z'
+                      address: '0x123abc'
+                      addressId: def456
+                      redirectUrl: 'https://example.com/redirect'
+                      notifyUrl: 'https://example.com/notify'
+                      rates:
+                        - ticker: USD_USDT
+                          amount: '1'
+                          price: '1.0'
+                          rate: '1.0'
+                          createdAt: '2023-08-24T14:15:22Z'
+                      fees:
+                        - id: fee123
+                          currency: USD
+                          amount: '0.5'
+                          type: processing
+                          createdAt: '2023-08-24T14:15:22Z'
+                      mode: standard
+                      firstName: John
+                      lastName: Doe
+                      countryOfResidence: US
+                      nameType: legal
+                    message: Invoice payment successful.
+                Sample 2:
+                  value:
+                    status: success
+                    data:
+                      status: pending
+                      type: deposit
+                      subType: invoice
+                      id: def456
+                      sourceCurrency: BTC
+                      sourceAmount: '0.01'
+                      targetCurrency: USD
+                      targetAmount: '500'
+                      mainCurrency: BTC
+                      merchantId: abc123
+                      invoiceCreated: '2023-09-15T10:30:00Z'
+                      invoiceExpires: '2023-09-16T10:30:00Z'
+                      address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+                      addressId: ghi789
+                      redirectUrl: 'https://example.com/payment/success'
+                      notifyUrl: 'https://example.com/payment/notify'
+                      rates:
+                        - ticker: USD_BTC
+                          amount: '500'
+                          price: '50000'
+                          rate: '50000'
+                          createdAt: '2023-09-15T10:30:00Z'
+                      fees:
+                        - id: fee456
+                          currency: USD
+                          amount: '5'
+                          type: processing
+                          createdAt: '2023-09-15T10:30:00Z'
+                      mode: express
+                      firstName: Jane
+                      lastName: Doe
+                      countryOfResidence: UK
+                      nameType: personal
+                    message: Invoice payment pending.
+      operationId: generate-invoice
+      tags:
+        - Pay Ins
+  /crypto/withdrawal:
+    post:
+      summary: Create Withdrawal
+      description: |
+        This endpoint allows users to initiate a cryptocurrency withdrawal.
+        Users need to provide details such as the target and source currencies, withdrawal amount, recipient address, and notification URL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                externalId:
+                  type: string
+                  description: A unique identifier associated with the withdrawal.
+                address:
+                  type: string
+                  description: The recipient address for the withdrawal.
+                sourceCurrency:
+                  type: string
+                  description: The currency from which the withdrawal amount will be deducted.
+                targetCurrency:
+                  type: string
+                  description: The currency to be withdrawn.
+                mainCurrency:
+                  type: string
+                  description: |-
+                    The main currency associated with the deposit. *Required* field only for the following currencies: USDT, USDC.
+                    For __USDT__, mainCurrency should be set as __ETH__, __TRX__, __BNB__.
+                    For __USDC__, mainCurrency should be set as __ETH__, __SOL__, __BNB__.
+                  enum:
+                    - ETH
+                    - TRX
+                    - SOL
+                    - BNB
+                  example: ETH
+                cashierCurrency:
+                  type: string
+                  description: The currency of the cashier account.
+                cashierAmount:
+                  type: string
+                  description: The amount to be withdrawn from the cashier account.
+                notifyUrl:
+                  type: string
+                  description: The URL to receive notifications about the withdrawal.
+                feeCoverage:
+                  type: boolean
+                  description: Flag for lifting fee from target amount
+                firstName:
+                  type: string
+                  description: The first name of the recipient.
+                lastName:
+                  type: string
+                  description: The last name of the recipient.
+                countryOfResidence:
+                  type: string
+                  description: Country where the recipient resides.
+                  enum:
+                    - AF
+                    - AX
+                    - AL
+                    - DZ
+                    - AS
+                    - AD
+                    - AO
+                    - AI
+                    - AQ
+                    - AG
+                    - AR
+                    - AM
+                    - AW
+                    - AU
+                    - AT
+                    - AZ
+                    - BS
+                    - BH
+                    - BD
+                    - BB
+                    - BY
+                    - BE
+                    - BZ
+                    - BJ
+                    - BM
+                    - BT
+                    - BO
+                    - BQ
+                    - BA
+                    - BW
+                    - BV
+                    - BR
+                    - IO
+                    - BN
+                    - BG
+                    - BF
+                    - BI
+                    - CV
+                    - KH
+                    - CM
+                    - CA
+                    - KY
+                    - CF
+                    - TD
+                    - CL
+                    - CN
+                    - CX
+                    - CC
+                    - CO
+                    - KM
+                    - CG
+                    - CD
+                    - CK
+                    - CR
+                    - CI
+                    - HR
+                    - CU
+                    - CW
+                    - CY
+                    - CZ
+                    - DK
+                    - DJ
+                    - DM
+                    - DO
+                    - EC
+                    - EG
+                    - SV
+                    - GQ
+                    - ER
+                    - EE
+                    - SZ
+                    - ET
+                    - FK
+                    - FO
+                    - FJ
+                    - FI
+                    - FR
+                    - GF
+                    - PF
+                    - TF
+                    - GA
+                    - GM
+                    - GE
+                    - DE
+                    - GH
+                    - GI
+                    - GR
+                    - GL
+                    - GD
+                    - GP
+                    - GU
+                    - GT
+                    - GG
+                    - GN
+                    - GW
+                    - GY
+                    - HT
+                    - HM
+                    - VA
+                    - HN
+                    - HK
+                    - HU
+                    - IS
+                    - IN
+                    - ID
+                    - IR
+                    - IQ
+                    - IE
+                    - IM
+                    - IL
+                    - IT
+                    - JM
+                    - JP
+                    - JE
+                    - JO
+                    - KZ
+                    - KE
+                    - KI
+                    - KP
+                    - KR
+                    - KW
+                    - KG
+                    - LA
+                    - LV
+                    - LB
+                    - LS
+                    - LR
+                    - LY
+                    - LI
+                    - LT
+                    - LU
+                    - MO
+                    - MK
+                    - MG
+                    - MW
+                    - MY
+                    - MV
+                    - ML
+                    - MT
+                    - MH
+                    - MQ
+                    - MR
+                    - MU
+                    - YT
+                    - MX
+                    - FM
+                    - MD
+                    - MC
+                    - MN
+                    - ME
+                    - MS
+                    - MA
+                    - MZ
+                    - MM
+                    - NA
+                    - NR
+                    - NP
+                    - NL
+                    - NC
+                    - NZ
+                    - NI
+                    - NE
+                    - NG
+                    - NU
+                    - NF
+                    - MP
+                    - 'NO'
+                    - OM
+                    - PK
+                    - PW
+                    - PS
+                    - PA
+                    - PG
+                    - PY
+                    - PE
+                    - PH
+                    - PN
+                    - PL
+                    - PT
+                    - PR
+                    - QA
+                    - RE
+                    - RO
+                    - RU
+                    - RW
+                    - BL
+                    - SH
+                    - KN
+                    - LC
+                    - MF
+                    - PM
+                    - VC
+                    - WS
+                    - SM
+                    - ST
+                    - SA
+                    - SN
+                    - RS
+                    - SC
+                    - SL
+                    - SG
+                    - SX
+                    - SK
+                    - SI
+                    - SB
+                    - SO
+                    - ZA
+                    - GS
+                    - SS
+                    - ES
+                    - LK
+                    - SD
+                    - SR
+                    - SJ
+                    - SE
+                    - CH
+                    - SY
+                    - TW
+                    - TJ
+                    - TZ
+                    - TH
+                    - TL
+                    - TG
+                    - TK
+                    - TO
+                    - TT
+                    - TN
+                    - TR
+                    - TM
+                    - TC
+                    - TV
+                    - UG
+                    - UA
+                    - AE
+                    - GB
+                    - US
+                    - UM
+                    - UY
+                    - UZ
+                    - VU
+                    - VE
+                    - VN
+                    - VG
+                    - VI
+                    - WF
+                    - EH
+                    - YE
+                    - ZM
+                    - ZW
+                nameType:
+                  type: string
+                  description: 'Type of name used for the recipient (e.g., alias).'
+                  enum:
+                    - alias
+                    - legal
+                    - birth
+                    - maiden
+                    - other
+              required:
+                - externalId
+                - address
+                - notifyUrl
+                - firstName
+                - lastName
+                - countryOfResidence
+            examples:
+              Sample 1:
+                value:
+                  externalId: withdrawal-001
+                  address: '0xAbC1234567890DEF'
+                  sourceCurrency: USDT
+                  targetCurrency: USD
+                  mainCurrency: ETH
+                  cashierCurrency: USD
+                  cashierAmount: '500'
+                  notifyUrl: 'https://example.com/webhook'
+                  feeCoverage: true
+                  firstName: John
+                  lastName: Doe
+                  countryOfResidence: AF
+                  nameType: alias
+              Sample 2:
+                value:
+                  externalId: withdrawal-001
+                  address: '0xAbC1234567890DEF'
+                  sourceCurrency: BTC
+                  targetCurrency: USD
+                  cashierCurrency: USD
+                  cashierAmount: '500'
+                  notifyUrl: 'https://example.com/webhook'
+                  feeCoverage: true
+                  firstName: John
+                  lastName: Doe
+                  countryOfResidence: AF
+                  nameType: alias
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response.
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: The internal ID of the withdrawal transaction.
+                      externalId:
+                        type: string
+                        description: The external ID associated with the withdrawal.
+                      cashierCurrency:
+                        type: string
+                        description: The currency of the cashier account.
+                      cashierAmount:
+                        type: string
+                        description: The amount withdrawn from the cashier account.
+                      sourceCurrency:
+                        type: string
+                        description: The currency from which the withdrawal amount was deducted.
+                      targetCurrency:
+                        type: string
+                        description: The currency to which the withdrawal was made.
+                      targetAmount:
+                        type: string
+                        description: The amount withdrawn in the target currency.
+                      type:
+                        type: string
+                        description: 'The type of the transaction (e.g., payout).'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The timestamp indicating when the withdrawal was initiated.
+                      firstName:
+                        type: string
+                        description: The first name of the recipient.
+                      lastName:
+                        type: string
+                        description: The last name of the recipient.
+                      countryOfResidence:
+                        type: string
+                        description: The country of residence of the recipient.
+                      nameType:
+                        type: string
+                        description: 'The type of name used for the recipient (e.g., legal).'
+                    description: Object containing withdrawal details.
+                  message:
+                    type: string
+                    description: A message indicating the result of the withdrawal operation.
+              examples:
+                Example 1:
+                  value:
+                    status: success
+                    data:
+                      id: abc123
+                      externalId: withdrawal-001
+                      cashierCurrency: USD
+                      cashierAmount: '100'
+                      sourceCurrency: BTC
+                      targetCurrency: USD
+                      targetAmount: '1000'
+                      type: withdrawal
+                      createdAt: '2023-09-15T14:30:00Z'
+                      firstName: John
+                      lastName: Doe
+                      countryOfResidence: US
+                      nameType: personal
+                    message: Withdrawal successful
+      tags:
+        - Pay Outs
+      operationId: create-withdrawal
+  '/crypto/payment/{paymentId}':
+    get:
+      summary: Payment Information
+      description: |
+        This endpoint allows users to retrieve information about a specific cryptocurrency payment using its `paymentId`.
+        The `paymentId` is the unique identifier named `id` returned in a  transaction response.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response.
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: The internal ID of the cryptocurrency payment.
+                      externalId:
+                        type: string
+                        description: The external ID of the cryptocurrency payment.
+                      type:
+                        type: string
+                        description: 'The type of the payment (e.g., deposit, withdrawal).'
+                      subType:
+                        type: string
+                        description: 'The sub-type of the payment (e.g., invoice).'
+                      targetAmount:
+                        type: string
+                        description: The target amount of the payment.
+                      targetCurrency:
+                        type: string
+                        description: The target currency of the payment.
+                      sourceAmount:
+                        type: string
+                        description: The source amount of the payment.
+                      sourceCurrency:
+                        type: string
+                        description: The source currency of the payment.
+                      paidAmount:
+                        type: number
+                        description: The amount paid for the payment.
+                      paidAmountInTargetCurrency:
+                        type: number
+                        description: The amount paid in the target currency of the payment.
+                      paidAmountInCashierCurrency:
+                        type: number
+                        description: The amount paid in the cashier's currency.
+                      status:
+                        type: string
+                        description: The status of the payment.
+                      kytAlertLevel:
+                        type: string
+                        description: The Know Your Transaction (KYT) alert level of the payment.
+                      kytStatus:
+                        type: string
+                        description: The Know Your Transaction (KYT) status of the payment.
+                      notifyUrl:
+                        type: string
+                        description: The notification URL associated with the payment.
+                      accountId:
+                        type: string
+                        description: The ID of the account associated with the payment.
+                      firstName:
+                        type: string
+                        description: The first name of the user associated with the payment.
+                      lastName:
+                        type: string
+                        description: The last name of the user associated with the payment.
+                      countryOfResidence:
+                        type: string
+                        description: The country of residence of the user associated with the payment.
+                      nameType:
+                        type: string
+                        description: 'The type of name used for the payment (e.g., legal).'
+                      blockchainTransactions:
+                        type: array
+                        description: An array of blockchain transactions associated with the payment.
+                        items:
+                          $ref: '#/components/schemas/BlockchainTransaction'
+                      exchangeTransactions:
+                        type: array
+                        description: An array of exchange transactions associated with the payment.
+                        items:
+                          $ref: '#/components/schemas/ExchangeTransaction'
+                      fees:
+                        type: array
+                        description: An array of fees associated with the payment.
+                        items:
+                          $ref: '#/components/schemas/Fee'
+                      rates:
+                        type: array
+                        description: An array of exchange rates associated with the payment.
+                        items:
+                          $ref: '#/components/schemas/Rate'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The timestamp indicating when the payment was created.
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: The timestamp indicating when the payment was last updated.
+                    description: Object containing payment details.
+                  message:
+                    type: string
+                    description: A message indicating the result of the operation.
+      operationId: payment-details
+      tags:
+        - Payments
+    parameters:
+      - $ref: '#/components/parameters/paymentId'
+  /crypto/rate:
+    post:
+      summary: Rate
+      description: |
+        To retrieve cryptocurrency exchange rates via API, users can access this endpoint.
+        This endpoint allows users to get the exchange rate for a given cryptocurrency pair, optionally indicating whether they intend to buy or sell.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticker:
+                  type: string
+                  description: 'The ticker symbol for the cryptocurrency pair (e.g., BTC_USD).'
+                  example: BTC_USD
+                amount:
+                  type: string
+                  description: The amount of cryptocurrency to exchange (optional).
+                  example: '1'
+                action:
+                  type: string
+                  enum:
+                    - buy
+                    - sell
+                  description: The action to indicate whether the user intends to buy or sell (optional).
+                  example: sell
+            examples:
+              Sample:
+                value:
+                  ticker: BTC_USD
+                  amount: '1'
+                  action: sell
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response.
+                  data:
+                    type: object
+                    properties:
+                      ticker:
+                        type: string
+                        description: The ticker symbol for the cryptocurrency pair.
+                      amount:
+                        type: string
+                        description: The amount of cryptocurrency used to get the exchange rate.
+                      price:
+                        type: string
+                        description: The current exchange rate for the specified cryptocurrency pair.
+                      exchangeRate:
+                        type: string
+                        description: The exchange rate for the specified cryptocurrency pair.
+                      reverseRate:
+                        type: string
+                        description: The reverse exchange rate for the specified cryptocurrency pair.
+                      timeStamp:
+                        type: string
+                        format: date-time
+                        description: The timestamp indicating when the rate was retrieved.
+                    description: Object containing exchange rate data.
+                  message:
+                    type: string
+                    description: A message indicating the result of the operation.
+              examples:
+                Sample:
+                  value:
+                    status: success
+                    data:
+                      ticker: BTC_USD
+                      amount: '1'
+                      price: '66751.40000000'
+                      exchangeRate: '66751.40000000'
+                      reverseRate: '0.00001498'
+                      timeStamp: '2024-04-22T22:15:07.460Z'
+                    message: Rate received
+      operationId: crypto-rates
+      tags:
+        - Rates
+  /balances:
+    get:
+      summary: Balance Enquiry
+      description: |-
+        To view their balances via API, the merchant would need to access this API endpoint.
+        This endpoint returns the balances for various currencies associated with a merchant.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        merchantId:
+                          type: string
+                          description: The merchant ID.
+                        currency:
+                          type: string
+                          description: The currency code.
+                        balance:
+                          type: string
+                          description: The balance amount.
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                          description: The timestamp when the balance was last updated.
+                      required:
+                        - merchantId
+                        - currency
+                        - balance
+                    description: An array of objects containing balance information for each currency.
+                  message:
+                    type: string
+                    description: A message indicating the result of the operation.
+              examples:
+                Sample:
+                  value:
+                    status: success
+                    data:
+                      - merchantId: SB-00CR0147
+                        currency: TST
+                        balance: '331.44696702'
+                        updatedAt: '2023-11-09T11:39:04.565Z'
+                      - merchantId: SB-00CR0146
+                        currency: TBTC
+                        balance: '0.0209986'
+                        updatedAt: '2023-04-04T13:26:15.135Z'
+      operationId: check-account-balances
+      tags:
+        - Reporting
+  /crypto/payments:
+    get:
+      summary: Payments
+      description: |-
+        To retrieve their crypto payments via API, the merchant would need to access this endpoint.
+        This endpoint allows merchants to fetch their crypto payments within a specified date range, with pagination support.
+      parameters:
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+          required: true
+          description: The start date of the period to retrieve payments from (YYYY-MM-DD).
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
+          required: true
+          description: The end date of the period to retrieve payments up to (YYYY-MM-DD).
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+          description: The maximum number of payments to return per page.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          description: The page number of the results to return.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response.
+                  data:
+                    type: object
+                    properties:
+                      payments:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Payment'
+                        description: An array of payment objects.
+                      total:
+                        type: integer
+                        description: The total number of payments matching the query criteria.
+                      skip:
+                        type: integer
+                        description: The number of payments skipped in the pagination.
+                      limit:
+                        type: integer
+                        description: The maximum number of payments returned per page.
+                    description: Object containing payments data along with pagination information.
+                  message:
+                    type: string
+                    description: A message indicating the result of the operation.
+      tags:
+        - Reporting
+      operationId: payment-reporting
+  /hpp-api-webhook-notification-url:
+    post:
+      summary: 'Pay in: HPPs & API Invoice Transaction Status Notification'
+      operationId: post-webhook-notification-url
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Webhook Notifications
+      description: Event Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  event: crypto_payment_status_updated
+                  id: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                  status: confirmed
+                  type: deposit
+                  updatedAt: '2020-03-11T14:47:13.727Z'
+              properties:
+                event:
+                  type: string
+                  description: The type of event triggered.
+                  example: crypto_payment_status_updated
+                type:
+                  type: string
+                  description: 'The type of payment (e.g., deposit, withdrawal).'
+                  example: deposit
+                id:
+                  type: string
+                  description: The unique identifier of the payment.
+                  example: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                externalId:
+                  type: string
+                  x-stoplight:
+                    id: dwgsyzmndcqhw
+                  description: The external ID associated with the deposit invoice.
+                status:
+                  type: string
+                  description: The updated status of the payment.
+                  example: confirmed
+                  enum:
+                    - initiated
+                    - pending
+                    - confirmed
+                    - credited
+                    - paid
+                    - underpaid
+                    - overpaid
+                    - failed
+                    - expired
+                updatedAt:
+                  type: string
+                  format: date-time
+                  description: The date and time when the payment status was last updated.
+                  example: '2020-03-11T14:47:13.727Z'
+            examples:
+              'Pay in: HPPs & API Invoice Transaction Status Callback':
+                value:
+                  id: e559b524-d02d-4516-a418-8bc4ac2ec832
+                  externalId: 559f440c-5086-458e-b398-e4b9ac22b945
+                  status: confirmed
+                  type: deposit
+                  updatedAt: '2024-05-23T07:22:25.326Z'
+                  event: crypto_payment_status_updated
+              Example 1:
+                value:
+                  event: crypto_payment_status_updated
+                  id: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                  status: confirmed
+                  type: deposit
+                  updatedAt: '2020-03-11T14:47:13.727Z'
+        description: Definition for a webhook event triggered when the status of a transaction is updated.
+    parameters: []
+  /rapid-api-webhook-notification-url:
+    post:
+      summary: 'Pay in: API Rapid Deposit Transaction Status Notification'
+      operationId: post-rapid-deposit-notification-url
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Webhook Notifications
+      description: Event Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  event: crypto_payment_status_updated
+                  id: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                  status: confirmed
+                  type: deposit
+                  updatedAt: '2020-03-11T14:47:13.727Z'
+              properties:
+                event:
+                  type: string
+                  description: The type of event triggered.
+                  example: crypto_payment_status_updated
+                id:
+                  type: string
+                  description: The unique identifier of the payment.
+                  example: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                status:
+                  type: string
+                  description: The updated status of the payment.
+                  example: confirmed
+                  enum:
+                    - pending
+                    - confirmed
+                    - credited
+                    - failed
+                type:
+                  type: string
+                  description: 'The type of payment (e.g., deposit, withdrawal).'
+                  example: deposit
+                externalId:
+                  type: string
+                  x-stoplight:
+                    id: qvwyimm128t3g
+                  description: The external ID associated with the deposit invoice.
+                updatedAt:
+                  type: string
+                  format: date-time
+                  description: The date and time when the payment status was last updated.
+                  example: '2020-03-11T14:47:13.727Z'
+            examples:
+              'Pay in: HPPs & API Invoice Transaction Status Callback':
+                value:
+                  id: e559b524-d02d-4516-a418-8bc4ac2ec832
+                  externalId: 559f440c-5086-458e-b398-e4b9ac22b945
+                  status: confirmed
+                  type: deposit
+                  updatedAt: '2024-05-23T07:22:25.326Z'
+                  event: crypto_payment_status_updated
+              Example 1:
+                value:
+                  id: e559b524-d02d-4516-a418-8bc4ac2ec832
+                  externalId: 559f440c-5086-458e-b398-e4b9ac22b945
+                  status: pending
+                  type: deposit
+                  updatedAt: '2024-05-23T07:22:25.326Z'
+                  event: crypto_payment_status_updated
+        description: Definition for a webhook event triggered when the status of a transaction is updated.
+    parameters: []
+  /payout-webhook-notification-url:
+    post:
+      summary: Pay out Transaction Status Notification
+      operationId: pay-out-notification-url
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Webhook Notifications
+      description: Event Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  event: crypto_payment_status_updated
+                  id: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                  status: confirmed
+                  type: deposit
+                  updatedAt: '2020-03-11T14:47:13.727Z'
+              properties:
+                event:
+                  type: string
+                  description: The type of event triggered.
+                  example: crypto_payment_status_updated
+                id:
+                  type: string
+                  description: The unique identifier of the payment.
+                  example: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                status:
+                  type: string
+                  description: The updated status of the payment.
+                  example: confirmed
+                  enum:
+                    - initiated
+                    - pending
+                    - confirmed
+                    - failed
+                type:
+                  type: string
+                  description: 'The type of payment (e.g., deposit, withdrawal).'
+                  example: deposit
+                externalId:
+                  type: string
+                  x-stoplight:
+                    id: s9r1n7miy8j80
+                  description: The external ID associated with the deposit invoice.
+                updatedAt:
+                  type: string
+                  format: date-time
+                  description: The date and time when the payment status was last updated.
+                  example: '2020-03-11T14:47:13.727Z'
+            examples:
+              'Pay in: HPPs & API Invoice Transaction Status Callback':
+                value:
+                  id: e559b524-d02d-4516-a418-8bc4ac2ec832
+                  externalId: 559f440c-5086-458e-b398-e4b9ac22b945
+                  status: confirmed
+                  type: deposit
+                  updatedAt: '2024-05-23T07:22:25.326Z'
+                  event: crypto_payment_status_updated
+              Example 1:
+                value:
+                  event: crypto_payment_status_updated
+                  id: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                  status: confirmed
+                  type: deposit
+                  updatedAt: '2020-03-11T14:47:13.727Z'
+        description: Definition for a webhook event triggered when the status of a transaction is updated.
+    parameters: []
+  /kyt-webhook-notification-url:
+    post:
+      summary: Pay in & Pay out KYT Alert Level Callback
+      operationId: kyt-deposit-notification-url
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Webhook Notifications
+      description: Event Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                  description: The type of event triggered.
+                  default: crypto_payment_kyt_status_updated
+                id:
+                  type: string
+                  description: The unique identifier of the payment.
+                  example: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                kytStatus:
+                  type: string
+                  description: The updated KYT status of the payment.
+                  example: low
+                  enum:
+                    - unknown
+                    - low
+                    - medium
+                    - high
+                    - severe
+                type:
+                  type: string
+                  description: 'The type of payment (e.g., deposit, withdrawal).'
+                  example: deposit
+                externalId:
+                  type: string
+                  x-stoplight:
+                    id: mbqchlvesupnp
+                  description: The external ID associated with the deposit invoice.
+                updatedAt:
+                  type: string
+                  format: date-time
+                  description: The date and time when the payment KYT status was last updated.
+                  example: '2020-03-11T14:47:13.727Z'
+            examples:
+              Example 1:
+                value:
+                  event: crypto_payment_kyt_status_updated
+                  id: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1dee
+                  kytStatus: unknown
+                  type: deposit
+                  externalId: 038f1bc2-2de9-4ae5-9dc2-a9ef99aa1eee
+                  updatedAt: '2020-03-11T14:47:13.727Z'
+        description: Definition for a webhook event triggered when the status of a transaction is updated.
+    parameters: []
+components:
+  schemas:
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the payment.
+        externalId:
+          type: string
+          description: The external identifier associated with the payment.
+        type:
+          type: string
+          description: 'The type of the payment (e.g., payout, deposit).'
+        targetAmount:
+          type: string
+          description: The amount of the payment in the target currency.
+        targetCurrency:
+          type: string
+          description: The currency code of the target currency.
+        sourceAmount:
+          type: string
+          description: The amount of the payment in the source currency.
+        sourceCurrency:
+          type: string
+          description: The currency code of the source currency.
+        mainCurrency:
+          type: string
+          description: The main currency involved in the payment.
+        status:
+          type: string
+          description: 'The status of the payment (e.g., confirmed, expired).'
+        kytAlertLevel:
+          type: string
+          description: The Know Your Transaction (KYT) alert level for the payment.
+        kytStatus:
+          type: string
+          description: The KYT status for the payment.
+        notifyUrl:
+          type: string
+          description: The URL to notify about the payment status.
+        accountId:
+          type: string
+          description: The identifier of the account associated with the payment.
+        issuerEntityId:
+          type: string
+          description: The identifier of the entity issuing the payment.
+        blockchainTransactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlockchainTransaction'
+          description: An array of blockchain transaction objects associated with the payment.
+        exchangeTransactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExchangeTransaction'
+          description: An array of exchange transaction objects associated with the payment.
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fee'
+          description: An array of fee objects associated with the payment.
+        rates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rate'
+          description: An array of rate objects associated with the payment.
+        subType:
+          type: string
+          description: The subtype of the payment.
+        paidAmountInCashierCurrency:
+          type: string
+          description: The amount paid in the cashier's currency.
+        paidAmountInTargetCurrency:
+          type: string
+          description: The amount paid in the target currency.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the payment was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the payment was last updated.
+    BlockchainTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the blockchain transaction.
+        state:
+          type: string
+          description: 'The state of the blockchain transaction (e.g., complete).'
+        direction:
+          type: string
+          description: 'The direction of the transaction (e.g., incoming, outgoing).'
+        amount:
+          type: string
+          description: The amount of the transaction.
+        decimals:
+          type: integer
+          description: The number of decimals for the currency.
+        txHash:
+          type: string
+          description: The hash of the blockchain transaction.
+        currency:
+          type: string
+          description: The currency code of the transaction.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the blockchain transaction was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the blockchain transaction was last updated.
+        sourceAddresses:
+          type: array
+          items:
+            type: string
+          description: An array of source addresses associated with the transaction.
+        destinationAddresses:
+          type: array
+          items:
+            type: string
+          description: An array of destination addresses associated with the transaction.
+    ExchangeTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the exchange transaction.
+        sourceCurrency:
+          type: string
+          description: The currency code of the source currency.
+        sourceAmount:
+          type: string
+          description: The amount of the exchange in the source currency.
+        targetCurrency:
+          type: string
+          description: The currency code of the target currency.
+        targetAmount:
+          type: string
+          description: The amount of the exchange in the target currency.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the exchange transaction was created.
+    Fee:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the fee.
+        currency:
+          type: string
+          description: The currency code of the fee.
+        amount:
+          type: string
+          description: The amount of the fee.
+        type:
+          type: string
+          description: The type of the fee.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the fee was created.
+    Rate:
+      type: object
+      properties:
+        ticker:
+          type: string
+          description: The ticker symbol for the rate.
+        amount:
+          type: string
+          description: The amount used in the rate calculation.
+        price:
+          type: string
+          description: The price calculated for the rate.
+        rate:
+          type: string
+          description: The rate calculated for the conversion.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp indicating when the rate was created.
+  securitySchemes:
+    x-api-key:
+      name: API KEY
+      type: apiKey
+      in: header
+  parameters:
+    paymentId:
+      name: paymentId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: This is a unique identifier labeled as `id` that is returned in the response object after a transaction request. This parameter is used to refer to specific transactions.
+security:
+  - x-api-key: []

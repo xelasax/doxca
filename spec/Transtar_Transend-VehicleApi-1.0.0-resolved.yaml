@@ -1,0 +1,1620 @@
+openapi: 3.0.1
+info:
+  title: Vehicle Api
+  description: An api that allows you to get vehicle filters for products.
+  termsOfService: https://cdn.transend.us/Transend+API+Terms.pdf
+  contact:
+    name: Software Development
+    url: https://app.swaggerhub.com/organizations/Transtar_Transend
+    email: softwaredevelopment@transtar1.com
+  version: 1.0.0
+servers:
+- url: "https://api.transend.us{basePath}"
+  variables:
+    basePath:
+      default: /vehicle
+  x-amazon-apigateway-endpoint-configuration:
+    types:
+    - EDGE
+    - api.transend.us
+    disableExecuteApiEndpoint: true
+- url: "https://sandboxapi.transend.us{basePath}"
+  variables:
+    basePath:
+      default: /vehicle
+security:
+- ApiKeyAuth: []
+- Bearer: []
+tags:
+- name: Vehicle Api
+  description: An api that allows you to get vehicle filters for products.
+paths:
+  /dtcs:
+    get:
+      tags:
+      - GetAllDtcs
+      summary: Gets all diagnostic trouble codes
+      description: "Sample request:\r\n            \r\n    GET /vehicle/dtcs"
+      operationId: GetAllDtcs
+      responses:
+        "200":
+          description: This response means that the call was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DtcExternalModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: https://apinlb.transend.us:3010/vehicle/dtcs
+        connectionId: bi5lhn
+        httpMethod: GET
+    options:
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /drivetype/{vhid}:
+    get:
+      tags:
+      - GetDriveTypesByVHID
+      summary: "Gets drive types filtered by year, make, model, sub model, engine, transmission"
+      description: "Sample request:\r\n            \r\n    GET /vehicle/drivetype/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetDriveTypesByVHID
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/drivetype/{vhid}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vhid: method.request.path.vhid
+    options:
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /engine/{vhid}:
+    get:
+      tags:
+      - GetEnginesByVHID
+      summary: "Gets engines filtered by year, make, model and sub model"
+      description: "Sample request:\r\n            \r\n    GET /vehicle/engine/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetEnginesByVHID
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EngineExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/engine/{vhid}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vhid: method.request.path.vhid
+    options:
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /make/{vhid}:
+    get:
+      tags:
+      - GetMakesByVHID
+      summary: Gets makes filtered by year
+      description: "Sample request:\r\n            \r\n    GET /vehicle/make/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetMakesByVHID
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MakeExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/make/{vhid}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vhid: method.request.path.vhid
+    options:
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /model/{vhid}:
+    get:
+      tags:
+      - GetModelsByVHID
+      summary: Gets models filtered by year and make
+      description: "Sample request:\r\n            \r\n    GET /vehicle/model/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetModelsByVHID
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/model/{vhid}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vhid: method.request.path.vhid
+    options:
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /submodel/{vhid}:
+    get:
+      tags:
+      - GetSubModelsByVHID
+      summary: "Gets sub models filtered by year, make and model"
+      description: "Sample request:\r\n            \r\n    GET /vehicle/submodel/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetSubModelsByVHID
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubModelExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/submodel/{vhid}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vhid: method.request.path.vhid
+    options:
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /tag/{vhid}:
+    get:
+      tags:
+      - GetTagsByVHID
+      summary: Gets tags filtered by VHID
+      description: "Sample request:\r\n            \r\n    GET /vehicle/tag/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetTagsByVHID
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/tag/{vhid}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vhid: method.request.path.vhid
+    options:
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /transmission:
+    get:
+      tags:
+      - GetTransmissions
+      summary: Gets transmissions
+      description: "Sample request:\r\n            \r\n    GET /vehicle/transmission\r\n    GET /vehicle/transmission?tagNumber=7KZD\r\n    GET /vehicle/transmission?transmissionMfrCode=4L80-E"
+      operationId: GetTransmissions
+      parameters:
+      - name: tagNumber
+        in: query
+        description: The tag number tied to the transmissions
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 7KZD
+        example: 7KZD
+      - name: transmissionMfrCode
+        in: query
+        description: The transmission manufacturer code
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4L80-E
+        example: 4L80-E
+      responses:
+        "200":
+          description: This response means that the call was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetTransmissionsTransmissionV1'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: https://apinlb.transend.us:3010/vehicle/transmission
+        connectionId: bi5lhn
+        httpMethod: GET
+    options:
+      parameters:
+      - name: tagNumber
+        in: query
+        description: The tag number tied to the transmissions
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 7KZD
+        example: 7KZD
+      - name: transmissionMfrCode
+        in: query
+        description: The transmission manufacturer code
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4L80-E
+        example: 4L80-E
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /transmission/{vhid}:
+    get:
+      tags:
+      - GetTransmissionsByVHID
+      summary: "Gets transmissions filtered by year, make, model and sub model"
+      description: "Sample request:\r\n            \r\n    GET /vehicle/transmission/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetTransmissionsByVHID
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransmissionExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/transmission/{vhid}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vhid: method.request.path.vhid
+    options:
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /{vhid}:
+    get:
+      tags:
+      - GetVehicleByVHID
+      summary: "Gets vehicles filtered by year, make, model, sub model and transmission"
+      description: "Sample request:\r\n            \r\n    GET /vehicle/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetVehicleByVHID
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/{vhid}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vhid: method.request.path.vhid
+    options:
+      parameters:
+      - name: vhid
+        in: path
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /aces:
+    get:
+      tags:
+      - GetVehiclesByAces
+      summary: Gets vehicles filtered by Aces
+      description: "Sample request:\r\n            \r\n    GET /vehicle/aces?yearid=2009&makeId=34&modelId=56\r\n    <br />\r\n    GET /vehicle/aces?yearId=1986&makeId=47&modelId=421&engineConfigId=1364&transmissionMfrCodeId=987&subModelId=440"
+      operationId: GetVehiclesByAces
+      parameters:
+      - name: yearId
+        in: query
+        description: Aces Vehicle Year
+        required: true
+        style: form
+        explode: true
+        schema:
+          maximum: 2147483647
+          minimum: 1900
+          type: integer
+          format: int32
+      - name: makeId
+        in: query
+        description: Aces Vehicle Make
+        required: true
+        style: form
+        explode: true
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: modelId
+        in: query
+        description: Aces Vehicle Model
+        required: true
+        style: form
+        explode: true
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: subModelId
+        in: query
+        description: Aces Vehicle SubModel
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: engineConfigId
+        in: query
+        description: Aces Vehicle EngineConfig
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: transmissionMfrCodeId
+        in: query
+        description: Aces Vehicle TransmissionMfrCode
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the aces.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: https://apinlb.transend.us:3010/vehicle/aces
+        connectionId: bi5lhn
+        httpMethod: GET
+    options:
+      parameters:
+      - name: yearId
+        in: query
+        description: Aces Vehicle Year
+        required: true
+        style: form
+        explode: true
+        schema:
+          maximum: 2147483647
+          minimum: 1900
+          type: integer
+          format: int32
+      - name: makeId
+        in: query
+        description: Aces Vehicle Make
+        required: true
+        style: form
+        explode: true
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: modelId
+        in: query
+        description: Aces Vehicle Model
+        required: true
+        style: form
+        explode: true
+        schema:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+      - name: subModelId
+        in: query
+        description: Aces Vehicle SubModel
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: engineConfigId
+        in: query
+        description: Aces Vehicle EngineConfig
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: transmissionMfrCodeId
+        in: query
+        description: Aces Vehicle TransmissionMfrCode
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /:
+    get:
+      tags:
+      - GetVehiclesByPlate
+      summary: Gets vehicles by plate
+      description: "Sample request:\r\n            \r\n    GET /vehicle?Plate=Zzz9999&State=NC"
+      operationId: GetVehiclesByPlate
+      parameters:
+      - name: plate
+        in: query
+        description: The license plate number for the vehicle you wish to identify
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Two character state of where the plate is registered
+        required: true
+        style: form
+        explode: true
+        schema:
+          maxLength: 2
+          minLength: 2
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the plate and state.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: https://apinlb.transend.us:3010/vehicle
+        connectionId: bi5lhn
+        httpMethod: GET
+    options:
+      parameters:
+      - name: plate
+        in: query
+        description: The license plate number for the vehicle you wish to identify
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Two character state of where the plate is registered
+        required: true
+        style: form
+        explode: true
+        schema:
+          maxLength: 2
+          minLength: 2
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /vin/{vin}:
+    get:
+      tags:
+      - GetVehiclesByVin
+      summary: Gets vehicles filtered by VIN
+      description: "Sample request:\r\n            \r\n    GET /vehicle/vin/JM1NB353130306052"
+      operationId: GetVehiclesByVin
+      parameters:
+      - name: vin
+        in: path
+        description: Vehicle Identification Number
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the vin.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: "https://apinlb.transend.us:3010/vehicle/vin/{vin}"
+        connectionId: bi5lhn
+        httpMethod: GET
+        requestParameters:
+          integration.request.path.vin: method.request.path.vin
+    options:
+      parameters:
+      - name: vin
+        in: path
+        description: Vehicle Identification Number
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+  /years:
+    get:
+      tags:
+      - GetVehicleYears
+      summary: "Gets years filtered by make, model, sub model, transmission and engine"
+      description: "Sample request:\r\n            \r\n    GET /vehicle/years/f1c1dedcf71776fe00000590ff8a0f40"
+      operationId: GetVehicleYears
+      parameters:
+      - name: vhid
+        in: query
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: This response means that the call was successful but it might not return results based on the VHID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleYearExternalModels'
+        "400":
+          description: A parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBodyModels'
+        "401":
+          description: If token is missing or expired.
+      security:
+      - Bearer: []
+      - ApiKeyAuth: []
+      x-amazon-apigateway-integration:
+        connectionType: VPC_LINK
+        type: http_proxy
+        uri: https://apinlb.transend.us:3010/vehicle/years
+        connectionId: bi5lhn
+        httpMethod: GET
+    options:
+      parameters:
+      - name: vhid
+        in: query
+        description: Vehicle identifier is returned by calls in the vehicle api.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        responses:
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT'"
+              method.response.header.Access-Control-Allow-Headers: "'Authorization,Accept,Accept-Encoding,Cache-Control,Content-Length,Content-Type,Connection,Host,Origin,Pragma,Referer,User-Agent,authorization,accept,accept-encoding,cache-control,connection,content-length,content-type,host,origin,pragma,referer,tsver,user-agent,x-api-key'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+        passthroughBehavior: WHEN_NO_MATCH
+components:
+  schemas:
+    DtcExternalModels:
+      type: object
+      properties:
+        dtcId:
+          type: integer
+          format: int32
+        dtcNumber:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+      additionalProperties: false
+    EngineExternalModels:
+      type: object
+      properties:
+        engineConfigId:
+          type: integer
+          format: int32
+        engineLabel:
+          type: string
+          nullable: true
+        liter:
+          type: number
+          format: double
+        cylinders:
+          type: integer
+          format: int32
+        vhid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ErrorResponseBodyModels:
+      type: object
+      properties:
+        messages:
+          type: array
+          nullable: true
+          readOnly: true
+          items:
+            type: string
+      additionalProperties: false
+    FamilyExternalModels:
+      type: object
+      properties:
+        chid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    GetTransmissionsFamilyV1:
+      type: object
+      properties:
+        chid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    GetTransmissionsTransmissionV1:
+      type: object
+      properties:
+        transmissionMfrCodeId:
+          type: integer
+          format: int32
+        transmissionMfrCode:
+          type: string
+          nullable: true
+        transmissionLabel:
+          type: string
+          nullable: true
+        industryTransmissionName:
+          type: string
+          nullable: true
+        vhid:
+          type: string
+          nullable: true
+        family:
+          $ref: '#/components/schemas/GetTransmissionsFamilyV1'
+      additionalProperties: false
+    MakeExternalModels:
+      type: object
+      properties:
+        makeId:
+          type: integer
+          format: int32
+        makeName:
+          type: string
+          nullable: true
+        vhid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ModelExternalModels:
+      type: object
+      properties:
+        modelId:
+          type: integer
+          format: int32
+        modelName:
+          type: string
+          nullable: true
+        vhid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SubModelExternalModels:
+      type: object
+      properties:
+        subModelId:
+          type: integer
+          format: int32
+        subModelName:
+          type: string
+          nullable: true
+        vhid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    TagExternalModels:
+      type: object
+      properties:
+        number:
+          type: string
+          nullable: true
+      additionalProperties: false
+    TransmissionExternalModels:
+      type: object
+      properties:
+        transmissionMfrCodeId:
+          type: integer
+          format: int32
+        transmissionMfrCode:
+          type: string
+          nullable: true
+        transmissionLabel:
+          type: string
+          nullable: true
+        industryTransmissionName:
+          type: string
+          nullable: true
+        vhid:
+          type: string
+          nullable: true
+        family:
+          $ref: '#/components/schemas/FamilyExternalModels'
+      additionalProperties: false
+    VehicleDriveTypeExternalModels:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    VehicleExternalModels:
+      type: object
+      properties:
+        year:
+          type: integer
+          format: int32
+        yearId:
+          type: integer
+          format: int32
+        makeId:
+          type: integer
+          format: int32
+        makeName:
+          type: string
+          nullable: true
+        modelId:
+          type: integer
+          format: int32
+        modelName:
+          type: string
+          nullable: true
+        subModelId:
+          type: integer
+          format: int32
+        subModelName:
+          type: string
+          nullable: true
+        engineConfigId:
+          type: integer
+          format: int32
+        engineLabel:
+          type: string
+          nullable: true
+        liter:
+          type: number
+          format: double
+        cylinders:
+          type: integer
+          format: int32
+        industryTransmissionName:
+          type: string
+          nullable: true
+        transmissionLabel:
+          type: string
+          nullable: true
+        transmissionMfrCodeId:
+          type: integer
+          format: int32
+        driveType:
+          $ref: '#/components/schemas/VehicleDriveTypeExternalModels'
+        vhid:
+          type: string
+          nullable: true
+        thumbnailUri:
+          type: string
+          nullable: true
+      additionalProperties: false
+    VehicleYearExternalModels:
+      type: object
+      properties:
+        year:
+          type: integer
+          format: int32
+        vhid:
+          type: string
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      description: Please supply your API key as provided by Transtar
+      name: x-api-key
+      in: header
+    Bearer:
+      type: http
+      description: Please enter token with Bearer into field
+      scheme: bearer
+x-amazon-apigateway-api-key-source: HEADER
+x-amazon-apigateway-cors:
+  allowOrigins:
+  - '*'
+  allowCredentials: false
+  allowMethods:
+  - DELETE
+  - GET
+  - OPTIONS
+  - POST
+  - PUT
+  allowHeaders:
+  - Authorization
+  - Accept
+  - Accept-Encoding
+  - Cache-Control
+  - Content-Length
+  - Content-Type
+  - Connection
+  - Host
+  - Origin
+  - Pragma
+  - Referer
+  - User-Agent
+  - authorization
+  - accept
+  - accept-encoding
+  - cache-control
+  - connection
+  - content-length
+  - content-type
+  - host
+  - origin
+  - pragma
+  - referer
+  - tsver
+  - user-agent
+  - x-api-key
