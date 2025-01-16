@@ -1,0 +1,1017 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "",
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "/TealpartsAPISandbox"
+    }
+  ],
+  "paths": {
+    "/api/Order/GetOrder": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchbyOrderIDQuery"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchbyOrderIDQuery"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchbyOrderIDQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Order/CreateOrder": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderQuery"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderQuery"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Quote/GetQuote": {
+      "post": {
+        "tags": [
+          "Quote"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchbyQuoteIDQuery"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchbyQuoteIDQuery"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchbyQuoteIDQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Quote/CreateQuote": {
+      "post": {
+        "tags": [
+          "Quote"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuotesQuery"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuotesQuery"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuotesQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateQuoteResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateQuoteResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateQuoteResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Quote/CreateQuoteSimple": {
+      "post": {
+        "tags": [
+          "Quote"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuoteQuery"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuoteQuery"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuoteQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateQuoteResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateQuoteResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateQuoteResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteValidationFail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/identity/token": {
+      "post": {
+        "tags": [
+          "Token"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/identity/token/refresh": {
+      "post": {
+        "tags": [
+          "Token"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SearchbyOrderIDQuery": {
+        "type": "object",
+        "properties": {
+          "orderNo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "addressDetails": {
+        "type": "object",
+        "properties": {
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "repairFacility": {
+        "type": "object",
+        "properties": {
+          "addressDetails": {
+            "$ref": "#/components/schemas/addressDetails"
+          },
+          "contactCell": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "facilityName": {
+            "type": "string",
+            "nullable": true
+          },
+          "facilityPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "facilityFax": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "customerInformation": {
+        "type": "object",
+        "properties": {
+          "adjuster": {
+            "type": "string",
+            "nullable": true
+          },
+          "adjusterEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "claimNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "authorizationNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "contractNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentMileage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "eocDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "eocMileage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "repairOrderNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "vin": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "parts": {
+        "type": "object",
+        "properties": {
+          "quoteNo": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateOrderQuery": {
+        "type": "object",
+        "properties": {
+          "repairFacility": {
+            "$ref": "#/components/schemas/repairFacility"
+          },
+          "customerInformation": {
+            "$ref": "#/components/schemas/customerInformation"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/parts"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchbyQuoteIDQuery": {
+        "type": "object",
+        "properties": {
+          "quoteNo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Qaddress": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Quotepart": {
+        "type": "object",
+        "properties": {
+          "searchType": {
+            "type": "string",
+            "nullable": true
+          },
+          "partNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "partCatalog": {
+            "type": "string",
+            "nullable": true
+          },
+          "shippingType": {
+            "type": "string",
+            "nullable": true
+          },
+          "warrantyDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Quoteparts": {
+        "type": "object",
+        "properties": {
+          "part": {
+            "$ref": "#/components/schemas/Quotepart"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateQuotesQuery": {
+        "type": "object",
+        "properties": {
+          "vin": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentMileage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Qaddress"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Quoteparts"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "messages": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "partRequested": {
+        "type": "object",
+        "properties": {
+          "searchType": {
+            "type": "string",
+            "nullable": true
+          },
+          "partNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "resourceUrls": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "warnings": {
+        "type": "object",
+        "properties": {
+          "header": {
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "warranty": {
+        "type": "object",
+        "properties": {
+          "warrantyId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warrantyDisplayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "warrantyDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "warrantyPrice": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "partsFound": {
+        "type": "object",
+        "properties": {
+          "customerKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "partCatalog": {
+            "type": "string",
+            "nullable": true
+          },
+          "coreValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "customerPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "tax": {
+            "type": "number",
+            "format": "double"
+          },
+          "shippingPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "shippingType": {
+            "type": "string",
+            "nullable": true
+          },
+          "coreShipping": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryDateCutoffUTC": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "stockStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "listPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "matchDetails": {
+            "type": "string",
+            "nullable": true
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/messages"
+            },
+            "nullable": true
+          },
+          "partRequested": {
+            "$ref": "#/components/schemas/partRequested"
+          },
+          "quotedPartNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "quoteId": {
+            "type": "string",
+            "nullable": true
+          },
+          "quoteNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "resourceUrls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/resourceUrls"
+            },
+            "nullable": true
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/warnings"
+            },
+            "nullable": true
+          },
+          "warranty": {
+            "$ref": "#/components/schemas/warranty"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateQuoteResult": {
+        "type": "object",
+        "properties": {
+          "partsFound": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/partsFound"
+            },
+            "nullable": true
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "QuoteValidationFail": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "nullable": true
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Qpart": {
+        "type": "object",
+        "properties": {
+          "searchType": {
+            "type": "string",
+            "nullable": true
+          },
+          "partNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Qparts": {
+        "type": "object",
+        "properties": {
+          "part": {
+            "$ref": "#/components/schemas/Qpart"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateQuoteQuery": {
+        "type": "object",
+        "properties": {
+          "vin": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentMileage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Qaddress"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Qparts"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenRequest": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "Input your Bearer token in this format - Bearer {your token here} to access this API",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}
