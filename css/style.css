@@ -245,3 +245,195 @@ textarea {
   }
 }
 
+/* Global Styles */
+body {
+  font-family: 'Inter', sans-serif; /* Clean, modern font */
+  background-color: #f5f5f5; /* Soft light background for better contrast */
+  color: #333; /* Text color for good readability */
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Main container for the stoplight element */
+.stoplight-element-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header styling */
+.stoplight-header {
+  background-color: #1f2937; /* Dark background for the header */
+  color: #ffffff; /* White text color */
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+}
+
+.stoplight-header h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.stoplight-header p {
+  font-size: 1.1rem;
+  color: #e5e7eb;
+  margin: 10px 0 0;
+}
+
+/* Styling for the navigation section (if applicable) */
+.stoplight-nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.stoplight-nav a {
+  text-decoration: none;
+  color: #2563eb; /* Blue color for navigation links */
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 10px 20px;
+  border-radius: 30px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.stoplight-nav a:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Card-like styling for each endpoint */
+.stoplight-method-card {
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 8px;
+  margin-bottom: 30px;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stoplight-method-card:hover {
+  transform: translateY(-5px); /* Slight elevation on hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Increased shadow */
+}
+
+/* Styling for method type labels (GET, POST, etc.) */
+.stoplight-method-label {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+/* Color differentiation for each HTTP method */
+.stoplight-method-label.get {
+  background-color: #34d399; /* Green for GET */
+}
+
+.stoplight-method-label.post {
+  background-color: #60a5fa; /* Blue for POST */
+}
+
+.stoplight-method-label.put {
+  background-color: #fbbf24; /* Yellow for PUT */
+}
+
+.stoplight-method-label.delete {
+  background-color: #ef4444; /* Red for DELETE */
+}
+
+/* Styling for the endpoint title */
+.stoplight-endpoint-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 15px;
+}
+
+/* Request body styling */
+.stoplight-request-body {
+  background-color: #f9fafb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #e5e7eb;
+}
+
+.stoplight-request-body code {
+  background-color: #f3f4f6;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Response section styling */
+.stoplight-response {
+  background-color: #f9fafb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #e5e7eb;
+}
+
+.stoplight-response code {
+  background-color: #f3f4f6;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Footer section */
+.stoplight-footer {
+  background-color: #1f2937; /* Dark footer */
+  color: #e5e7eb;
+  padding: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  border-radius: 0 0 8px 8px;
+}
+
+.stoplight-footer p {
+  margin: 0;
+}
+
+/* Button styling for interactive elements */
+.stoplight-button {
+  display: inline-block;
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.stoplight-button:hover {
+  background-color: #1d4ed8; /* Darker blue on hover */
+}
+
+/* Make sure that stoplight is responsive */
+@media (max-width: 768px) {
+  .stoplight-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stoplight-method-card {
+    padding: 15px;
+  }
+}
+
+
