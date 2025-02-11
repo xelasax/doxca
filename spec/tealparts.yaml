@@ -662,6 +662,8 @@ paths:
           description: Unauthorized access.
         '500':
           description: Internal server error.
+      security:
+        - Authorization: []
   /api/Quote/CreateQuote:
     post:
       summary: Create a quote for vehicle parts
@@ -903,6 +905,8 @@ paths:
                     errorMessage: success
       tags:
         - Quote
+      security:
+        - Authorization: []
   /api/Quote/GetQuote:
     post:
       summary: Retrieve a quote based on a quote number
@@ -1034,6 +1038,213 @@ paths:
                     errorMessage: success
       tags:
         - Quote
+      security:
+        - Authorization: []
+  /api/Order/CreateOrder:
+    post:
+      summary: Create a new order
+      description: 'Creates a new order with customer and repair facility details, along with parts information.'
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                repairFacility:
+                  type: object
+                  description: Information about the repair facility placing the order.
+                  properties:
+                    addressDetails:
+                      type: object
+                      description: Address details of the repair facility.
+                      properties:
+                        address1:
+                          type: string
+                          description: Street address.
+                          example: 8380 Miramar Mall
+                        address2:
+                          type: string
+                          description: Additional address details.
+                          example: Suite 125
+                        city:
+                          type: string
+                          description: City name.
+                          example: San Diego
+                        postalCode:
+                          type: string
+                          description: Postal or ZIP code.
+                          example: '92121'
+                        stateCode:
+                          type: string
+                          description: State or province code.
+                          example: CA
+                        countryCode:
+                          type: string
+                          description: Country code.
+                          example: USA
+                    contactCell:
+                      type: string
+                      description: Repair facility contact cell phone number.
+                      example: 800-555-1234
+                    contactName:
+                      type: string
+                      description: Name of the primary contact at the repair facility.
+                      example: Sam Salesman
+                    contactEmail:
+                      type: string
+                      format: email
+                      description: Email address of the contact.
+                      example: anyemail@gmail.com
+                    facilityName:
+                      type: string
+                      description: Name of the repair facility.
+                      example: Auto Repair Shop
+                    facilityPhone:
+                      type: string
+                      description: Primary phone number of the facility.
+                      example: 800-555-1234
+                    facilityFax:
+                      type: string
+                      description: Fax number of the facility.
+                      example: string
+                customerInformation:
+                  type: object
+                  description: Details about the customer placing the order.
+                  properties:
+                    adjuster:
+                      type: string
+                      description: Name of the insurance adjuster.
+                      example: Alan Adjuster
+                    adjusterEmail:
+                      type: string
+                      format: email
+                      description: Email address of the adjuster.
+                      example: anyemail@gmail.com
+                    claimNumber:
+                      type: string
+                      description: Claim number associated with the order.
+                      example: CL98765
+                    authorizationNumber:
+                      type: string
+                      description: Authorization number for the order.
+                      example: AUTH4567
+                    contractNumber:
+                      type: string
+                      description: Contract number for the customer.
+                      example: 800-555-1234
+                    currentMileage:
+                      type: integer
+                      description: Current mileage of the vehicle.
+                      example: 123456
+                    eocDate:
+                      type: string
+                      format: date
+                      description: End of coverage date.
+                      example: 12-31-2030
+                    eocMileage:
+                      type: integer
+                      description: Mileage at which coverage ends.
+                      example: 500000
+                    note:
+                      type: string
+                      description: Additional notes.
+                      example: string
+                    ownerName:
+                      type: string
+                      description: Name of the vehicle owner.
+                      example: Bob Owner
+                    repairOrderNumber:
+                      type: string
+                      description: Repair order number.
+                      example: RO12345
+                    vin:
+                      type: string
+                      description: Vehicle Identification Number (VIN).
+                      example: 1GCRCPEC6FZ435670
+                parts:
+                  type: array
+                  description: List of parts included in the order.
+                  items:
+                    type: object
+                    properties:
+                      quoteNo:
+                        type: array
+                        items:
+                          type: string
+                        description: List of quote numbers.
+                        example:
+                          - AQ10002816
+      responses:
+        '200':
+          description: Order successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                    description: Unique identifier for the order.
+                    example: '1470'
+                  orderNo:
+                    type: string
+                    description: Order number assigned to the new order.
+                    example: ATQ100256
+                  orderStatus:
+                    type: string
+                    description: Current status of the order.
+                    example: Completed
+                  totalOrderCost:
+                    type: number
+                    format: float
+                    description: Total cost of the order.
+                    example: 409.19
+                  totalOrderTax:
+                    type: number
+                    format: float
+                    description: Total tax applied to the order.
+                    example: 0
+                  partsOrdered:
+                    type: array
+                    description: List of parts successfully ordered.
+                    items:
+                      type: object
+                      properties:
+                        customerKey:
+                          type: string
+                          description: Customer key for the part.
+                          example: Simple
+                        partCatalog:
+                          type: string
+                          description: Part catalog type.
+                          example: New Aftermarket
+                        description:
+                          type: string
+                          description: Description of the part.
+                          example: A/C Compressor
+                        totalPrice:
+                          type: number
+                          format: float
+                          description: Total price for the part.
+                          example: 409.19
+                        quoteId:
+                          type: string
+                          description: Quote identifier for the part.
+                          example: '44008'
+                        quoteNo:
+                          type: string
+                          description: Quote number associated with the part.
+                          example: AQ10002816
+                  errorMessage:
+                    type: string
+                    description: 'Error message, if any.'
+                    example: success
+      tags:
+        - Order
+      security:
+        - Authorization: []
   /api/Order/GetOrder:
     post:
       summary: Retrieve an order by order number
@@ -1164,6 +1375,8 @@ paths:
                     example: success
       tags:
         - Order
+      security:
+        - Authorization: []
 components:
   schemas: {}
   securitySchemes:
