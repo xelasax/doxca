@@ -1,0 +1,1112 @@
+openapi: 3.1.0
+x-stoplight:
+  id: 5v6p46wtboa4i
+info:
+  title: tealparts
+  version: '1.0'
+  description: |-
+    ## **Welcome to TealParts**
+
+    At **TealParts**, we provide high-quality **OEM and aftermarket car parts** for a wide range of vehicles. Whether you're a mechanic, car enthusiast, or business looking for reliable automotive components, we ensure a seamless shopping experience with **fast shipping, competitive pricing, and exceptional customer support**.
+
+    Our platform is designed for **efficiency and innovation**, allowing customers to **search, compare, and order** parts effortlessly. Businesses can also integrate with our system through our powerful API suite, enabling real-time stock availability, pricing, and order management.
+
+
+    ## **TealParts API – Powering Automotive Commerce**
+
+    TealParts offers a robust **RESTful API** that allows businesses to seamlessly integrate our vast catalog of car parts into their own platforms, similar to **Stripe for payments**. Our API is designed using standard **REST principles**, ensuring **scalability, interoperability, and efficiency** for developers.
+
+    ### **Key Features of TealParts API**
+
+    - **Product Catalog Access** – Search and retrieve detailed specifications, images, and pricing.
+    - **Real-Time Inventory** – Check stock availability instantly.
+    - **Order Management** – Place and track orders programmatically.
+    - **Pricing & Discounts** – Fetch dynamic pricing, including bulk discounts.
+    - **Payment & Invoicing** – Integrate with multiple payment gateways for seamless transactions.
+
+    ### **API Protocols and RESTful Standards**
+
+    TealParts API follows the **REST (Representational State Transfer) architecture**, ensuring simplicity and consistency. Our API is:
+
+    - **Stateless** – Each request contains all necessary information, meaning no client session is stored on the server.
+    - **Cacheable** – Responses include proper HTTP caching headers to improve performance.
+    - **Resource-Based** – Endpoints represent resources (e.g., `/products`, `/orders`, `/inventory`).
+    - **Uses JSON** – All requests and responses use **JSON** format for easy integration.
+    - **Secure** – Authentication is handled via **OAuth 2.0**, ensuring secure access.
+
+    ### **Getting Started with TealParts API**
+
+    Developers can easily integrate TealParts API using our **comprehensive documentation and test environment**. With **RESTful best practices, intuitive endpoints, and robust security measures**, our API enables businesses to scale efficiently and automate operations seamlessly.
+  contact:
+    name: ' Chris Cowman'
+    email: support@tealparts.com
+servers:
+  - url: 'https://tealparts.com/TealpartsAPISandbox'
+    description: SANDBOX
+  - description: PRODUCTION
+    url: 'https://tealparts.com/TealpartsAPI'
+paths:
+  /api/identity/token:
+    post:
+      summary: Obtain an Access Token
+      description: |
+        This endpoint allows clients to obtain an access token and a refresh token using valid user credentials.
+            
+        The access token is required for subsequent API requests, while the refresh token enables seamless re-authentication without requiring user credentials again.
+            
+          **Authentication & Authorization:**
+        - The access token must be included in the `Authorization` header as a Bearer token when making requests to any other API endpoint.
+        - Failure to provide a valid token will result in an `401 Unauthorized` response.
+        - Tokens should be securely stored and not shared.
+
+
+        This endpoint must be used securely over HTTPS.
+      operationId: authenticateUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The registered email address of the user.
+                  example: testapi@stc.com
+                password:
+                  type: string
+                  format: password
+                  description: The user's password (must be kept secure).
+                  example: Teal2099!
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Successfully authenticated. Access and refresh tokens are returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        description: The JWT access token for authentication.
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                      refreshToken:
+                        type: string
+                        description: The refresh token for obtaining a new access token.
+                        example: 4Uwe41wc6vYjsrlmfa1XnGEf2rkDGNMGvhCmxyFSEek=
+                      refreshTokenExpiryTime:
+                        type: string
+                        format: date-time
+                        description: The expiration timestamp of the refresh token.
+                        example: '2025-02-17T14:47:44.9648191-08:00'
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                    description: Additional messages related to the request.
+                    example: []
+                  succeeded:
+                    type: boolean
+                    description: Indicates whether authentication was successful.
+                    example: true
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                      refreshToken: 4Uwe41wc6vYjsrlmfa1XnGEf2rkDGNMGvhCmxyFSEek=
+                      refreshTokenExpiryTime: '2025-02-17T14:47:44.9648191-08:00'
+                    messages: []
+                    succeeded: true
+        '400':
+          description: Bad request due to missing or invalid input.
+        '401':
+          description: Unauthorized - Incorrect email or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: 'null'
+                    description: No data returned for unauthorized requests.
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                    description: Error messages describing the reason for unauthorized access.
+                    example:
+                      - User Not Found.
+                  succeeded:
+                    type: boolean
+                    description: Indicates whether authentication was successful.
+                    example: false
+              examples:
+                Example 1:
+                  value:
+                    data: null
+                    messages:
+                      - User Not Found.
+                    succeeded: false
+        '500':
+          description: Internal server error - Unexpected issue occurred on the server.
+  /api/Quote/CreateQuoteSimple:
+    post:
+      summary: Simple Quote
+      description: |
+        This endpoint allows users to generate a quote for vehicle parts by providing a VIN, mileage, and location details. 
+        The response includes matching parts, pricing, warranty options, and estimated shipping costs.
+      operationId: createQuoteSimple
+      tags:
+        - Quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vin:
+                  type: string
+                  description: Vehicle Identification Number (VIN) used to identify the vehicle.
+                  example: 1GCRCPEC6FZ435670
+                currentMileage:
+                  type: integer
+                  description: Current mileage of the vehicle in miles.
+                  example: 123456
+                address:
+                  type: object
+                  description: 'The address where the quote applies, which may affect shipping costs.'
+                  properties:
+                    city:
+                      type: string
+                      description: City where the vehicle is located.
+                      example: San Diego
+                    postalCode:
+                      type: string
+                      description: ZIP or postal code.
+                      example: '92121'
+                    stateCode:
+                      type: string
+                      description: State code following ISO 3166-2 format.
+                      example: CA
+                    countryCode:
+                      type: string
+                      description: Country code following ISO 3166-1 Alpha-3 format.
+                      example: USA
+                parts:
+                  type: array
+                  description: List of parts to be quoted. Each part entry includes the type and quantity.
+                  items:
+                    type: object
+                    properties:
+                      part:
+                        type: object
+                        properties:
+                          searchType:
+                            type: string
+                            description: Type of part being requested.
+                            example: A/C Compressor
+                          partNumber:
+                            type: string
+                            description: Optional manufacturer part number.
+                            example: string
+                          key:
+                            type: string
+                            description: Unique customer key for identifying the part request.
+                            example: Simple
+                      quantity:
+                        type: integer
+                        description: Number of units requested.
+                        example: 1
+            examples:
+              Example 1:
+                value:
+                  vin: 1GCRCPEC6FZ435670
+                  currentMileage: 123456
+                  address:
+                    city: San Diego
+                    postalCode: '92121'
+                    stateCode: CA
+                    countryCode: USA
+                  parts:
+                    - part:
+                        searchType: A/C Compressor
+                        partNumber: string
+                        key: Simple
+                      quantity: 1
+      responses:
+        '200':
+          description: Successfully retrieved quote details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  partsFound:
+                    type: array
+                    description: List of available parts that match the request.
+                    items:
+                      type: object
+                      properties:
+                        customerKey:
+                          type: string
+                          description: Customer-specific key for the part.
+                        partCatalog:
+                          type: string
+                          description: 'Catalog source of the part, e.g., ''New Aftermarket''.'
+                        coreValue:
+                          type: number
+                          format: float
+                          description: 'Core charge associated with the part, if applicable.'
+                        customerPrice:
+                          type: number
+                          format: float
+                          description: Price offered to the customer.
+                        tax:
+                          type: number
+                          format: float
+                          description: Applicable tax amount.
+                        shippingPrice:
+                          type: number
+                          format: float
+                          description: Shipping cost for the part.
+                        shippingType:
+                          type: string
+                          description: Shipping method used.
+                        deliveryDateCutoffUTC:
+                          type: string
+                          format: date-time
+                          description: Deadline for processing the order to meet estimated delivery times.
+                        description:
+                          type: string
+                          description: Detailed description of the part.
+                        listPrice:
+                          type: number
+                          format: float
+                          description: Retail list price of the part.
+                        totalPrice:
+                          type: number
+                          format: float
+                          description: Final price including tax and shipping.
+                        partRequested:
+                          type: object
+                          description: Original part request details.
+                          properties:
+                            searchType:
+                              type: string
+                              description: Type of part requested.
+                            partNumber:
+                              type: string
+                              description: Manufacturer part number.
+                            key:
+                              type: string
+                              description: Customer key for reference.
+                        quotedPartNumber:
+                          type: string
+                          description: Final quoted part number.
+                        quoteId:
+                          type: string
+                          description: Unique identifier for the quote.
+                        quoteNo:
+                          type: string
+                          description: Human-readable quote number.
+                        resourceUrls:
+                          type: array
+                          description: List of related resources for the quoted part.
+                          items:
+                            type: object
+                            properties:
+                              url:
+                                type: string
+                                format: uri
+                                description: URL linking to more details about the part.
+                              description:
+                                type: string
+                                description: Description of the resource.
+                              type:
+                                type: string
+                                description: Type of resource.
+                        warnings:
+                          type: array
+                          description: List of warnings related to the quote.
+                          items:
+                            type: object
+                            properties:
+                              header:
+                                type: string
+                                description: Warning header.
+                              content:
+                                type: string
+                                description: Detailed warning message.
+                        warranty:
+                          type: object
+                          description: Warranty details associated with the part.
+                          properties:
+                            warrantyId:
+                              type: integer
+                              description: Unique ID for the warranty plan.
+                            warrantyDisplayName:
+                              type: string
+                              description: User-friendly warranty name.
+                            warrantyDescription:
+                              type: string
+                              description: Detailed description of the warranty coverage.
+                            warrantyPrice:
+                              type: number
+                              format: float
+                              description: Cost of the warranty.
+                  errorMessage:
+                    type: string
+                    description: Success message or error details if applicable.
+                    example: success
+              examples:
+                Example 1:
+                  value:
+                    partsFound:
+                      - customerKey: Simple
+                        partCatalog: New Aftermarket
+                        coreValue: 0
+                        customerPrice: 320
+                        tax: 0
+                        shippingPrice: 70
+                        shippingType: Next Day Air Freight
+                        coreShipping: ''
+                        deliveryDate: ''
+                        deliveryDateCutoffUTC: '2025-02-11 19:00'
+                        description: A/C Compressor
+                        stockStatus: ''
+                        listPrice: 320
+                        totalPrice: 409.2
+                        matchDetails: ''
+                        messages:
+                          - category: ''
+                            content: LS / Incl.A/C Compressor Clutch / N/A
+                        partRequested:
+                          searchType: A/C Compressor
+                          partNumber: '86798574'
+                          key: Simple
+                        quotedPartNumber: 13103-1415A
+                        quoteId: '43841'
+                        quoteNo: AQ10002649
+                        resourceUrls:
+                          - url: 'http://tealpartssandbox.apapmt.com/Home/PartDetail?KEY=QVExMDAwMjY0OQ=='
+                            description: ''
+                            type: ''
+                        warnings:
+                          - header: ''
+                            content: ''
+                        warranty:
+                          warrantyId: 6
+                          warrantyDisplayName: 12/12 Parts & Labor Warranty
+                          warrantyDescription: 12/12 Parts & Labor Warranty
+                          warrantyPrice: 19.2
+                      - customerKey: Simple
+                        partCatalog: New Aftermarket
+                        coreValue: 0
+                        customerPrice: 320
+                        tax: 0
+                        shippingPrice: 70
+                        shippingType: Next Day Air Freight
+                        coreShipping: ''
+                        deliveryDate: ''
+                        deliveryDateCutoffUTC: '2025-02-11 19:00'
+                        description: A/C Compressor
+                        stockStatus: ''
+                        listPrice: 320
+                        totalPrice: 409.2
+                        matchDetails: ''
+                        messages:
+                          - category: ''
+                            content: LT / Incl.A/C Compressor Clutch / N/A
+                        partRequested:
+                          searchType: A/C Compressor
+                          partNumber: '86798574'
+                          key: Simple
+                        quotedPartNumber: 13103-1415A
+                        quoteId: '43842'
+                        quoteNo: AQ10002650
+                        resourceUrls:
+                          - url: 'http://tealpartssandbox.apapmt.com/Home/PartDetail?KEY=QVExMDAwMjY1MA=='
+                            description: ''
+                            type: ''
+                        warnings:
+                          - header: ''
+                            content: ''
+                        warranty:
+                          warrantyId: 6
+                          warrantyDisplayName: 12/12 Parts & Labor Warranty
+                          warrantyDescription: 12/12 Parts & Labor Warranty
+                          warrantyPrice: 19.2
+                      - customerKey: Simple
+                        partCatalog: New Aftermarket
+                        coreValue: 0
+                        customerPrice: 320
+                        tax: 0
+                        shippingPrice: 70
+                        shippingType: Next Day Air Freight
+                        coreShipping: ''
+                        deliveryDate: ''
+                        deliveryDateCutoffUTC: '2025-02-11 19:00'
+                        description: A/C Compressor
+                        stockStatus: ''
+                        listPrice: 320
+                        totalPrice: 409.2
+                        matchDetails: ''
+                        messages:
+                          - category: ''
+                            content: WT / Incl.A/C Compressor Clutch / N/A
+                        partRequested:
+                          searchType: A/C Compressor
+                          partNumber: '86798574'
+                          key: Simple
+                        quotedPartNumber: 13103-1415A
+                        quoteId: '43843'
+                        quoteNo: AQ10002651
+                        resourceUrls:
+                          - url: 'http://tealpartssandbox.apapmt.com/Home/PartDetail?KEY=QVExMDAwMjY1MQ=='
+                            description: ''
+                            type: ''
+                        warnings:
+                          - header: ''
+                            content: ''
+                        warranty:
+                          warrantyId: 6
+                          warrantyDisplayName: 12/12 Parts & Labor Warranty
+                          warrantyDescription: 12/12 Parts & Labor Warranty
+                          warrantyPrice: 19.2
+                      - customerKey: Simple
+                        partCatalog: New Aftermarket
+                        coreValue: 0
+                        customerPrice: 320
+                        tax: 0
+                        shippingPrice: 70
+                        shippingType: Next Day Air Freight
+                        coreShipping: ''
+                        deliveryDate: ''
+                        deliveryDateCutoffUTC: '2025-02-11 19:00'
+                        description: A/C Compressor
+                        stockStatus: ''
+                        listPrice: 320
+                        totalPrice: 409.2
+                        matchDetails: ''
+                        messages:
+                          - category: ''
+                            content: LTZ / Incl.A/C Compressor Clutch / N/A
+                        partRequested:
+                          searchType: A/C Compressor
+                          partNumber: '86798574'
+                          key: Simple
+                        quotedPartNumber: 13103-1415A
+                        quoteId: '43844'
+                        quoteNo: AQ10002652
+                        resourceUrls:
+                          - url: 'http://tealpartssandbox.apapmt.com/Home/PartDetail?KEY=QVExMDAwMjY1Mg=='
+                            description: ''
+                            type: ''
+                        warnings:
+                          - header: ''
+                            content: ''
+                        warranty:
+                          warrantyId: 6
+                          warrantyDisplayName: 12/12 Parts & Labor Warranty
+                          warrantyDescription: 12/12 Parts & Labor Warranty
+                          warrantyPrice: 19.2
+                      - customerKey: Simple
+                        partCatalog: New Aftermarket
+                        coreValue: 0
+                        customerPrice: 320
+                        tax: 0
+                        shippingPrice: 70
+                        shippingType: Next Day Air Freight
+                        coreShipping: ''
+                        deliveryDate: ''
+                        deliveryDateCutoffUTC: '2025-02-11 19:00'
+                        description: A/C Compressor
+                        stockStatus: ''
+                        listPrice: 320
+                        totalPrice: 409.2
+                        matchDetails: ''
+                        messages:
+                          - category: ''
+                            content: High Country / Incl.A/C Compressor Clutch / N/A
+                        partRequested:
+                          searchType: A/C Compressor
+                          partNumber: '86798574'
+                          key: Simple
+                        quotedPartNumber: 13103-1415A
+                        quoteId: '43845'
+                        quoteNo: AQ10002653
+                        resourceUrls:
+                          - url: 'http://tealpartssandbox.apapmt.com/Home/PartDetail?KEY=QVExMDAwMjY1Mw=='
+                            description: ''
+                            type: ''
+                        warnings:
+                          - header: ''
+                            content: ''
+                        warranty:
+                          warrantyId: 6
+                          warrantyDisplayName: 12/12 Parts & Labor Warranty
+                          warrantyDescription: 12/12 Parts & Labor Warranty
+                          warrantyPrice: 19.2
+                      - customerKey: Simple
+                        partCatalog: New Aftermarket
+                        coreValue: 0
+                        customerPrice: 320
+                        tax: 0
+                        shippingPrice: 70
+                        shippingType: Next Day Air Freight
+                        coreShipping: ''
+                        deliveryDate: ''
+                        deliveryDateCutoffUTC: '2025-02-11 19:00'
+                        description: A/C Compressor
+                        stockStatus: ''
+                        listPrice: 320
+                        totalPrice: 409.2
+                        matchDetails: ''
+                        messages:
+                          - category: ''
+                            content: SSV / Incl.A/C Compressor Clutch / N/A
+                        partRequested:
+                          searchType: A/C Compressor
+                          partNumber: '86798574'
+                          key: Simple
+                        quotedPartNumber: 13103-1415A
+                        quoteId: '43846'
+                        quoteNo: AQ10002654
+                        resourceUrls:
+                          - url: 'http://tealpartssandbox.apapmt.com/Home/PartDetail?KEY=QVExMDAwMjY1NA=='
+                            description: ''
+                            type: ''
+                        warnings:
+                          - header: ''
+                            content: ''
+                        warranty:
+                          warrantyId: 6
+                          warrantyDisplayName: 12/12 Parts & Labor Warranty
+                          warrantyDescription: 12/12 Parts & Labor Warranty
+                          warrantyPrice: 19.2
+                    errorMessage: success
+        '400':
+          description: Bad request due to invalid input.
+        '401':
+          description: Unauthorized access.
+        '500':
+          description: Internal server error.
+  /api/Quote/CreateQuote:
+    post:
+      summary: Create a quote for vehicle parts
+      description: 'Generates a quote for vehicle parts based on the provided VIN, current mileage, and shipping address. The response includes available parts, pricing, shipping details, and warranties.'
+      operationId: createQuote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vin:
+                  type: string
+                  description: The 17-character Vehicle Identification Number (VIN) used to identify the vehicle.
+                  example: 1GCRCPEC6FZ435670
+                currentMileage:
+                  type: integer
+                  description: 'The current odometer reading of the vehicle, expressed in miles.'
+                  example: 123456
+                address:
+                  type: object
+                  description: Shipping address where the requested parts will be delivered.
+                  properties:
+                    city:
+                      type: string
+                      description: Name of the destination city.
+                      example: San Diego
+                    postalCode:
+                      type: string
+                      description: Postal or ZIP code for the delivery location.
+                      example: '92121'
+                    stateCode:
+                      type: string
+                      description: Two-letter state abbreviation.
+                      example: CA
+                    countryCode:
+                      type: string
+                      description: Three-letter country code following ISO 3166-1 standard.
+                      example: USA
+                parts:
+                  type: array
+                  description: A list of parts requested for the quotation.
+                  items:
+                    type: object
+                    properties:
+                      part:
+                        type: object
+                        description: Detailed information about the requested part.
+                        properties:
+                          searchType:
+                            type: string
+                            description: Specifies the type of part being requested.
+                            example: A/C Compressor
+                          partNumber:
+                            type: string
+                            description: 'Unique identifier for the specific part, if known.'
+                            example: string
+                          partCatalog:
+                            type: string
+                            description: 'Specifies the catalog from which the part is sourced (e.g., OEM, aftermarket, all).'
+                            example: all
+                          shippingType:
+                            type: string
+                            description: Defines the shipping preference for the part.
+                            example: all
+                          warrantyDescription:
+                            type: string
+                            description: Description of the warranty coverage available for the part.
+                            example: all
+                          key:
+                            type: string
+                            description: Unique key identifier for the part request.
+                            example: QuoteV-P-All
+                      quantity:
+                        type: integer
+                        description: Number of units requested for the part.
+                        example: 1
+      responses:
+        '200':
+          description: Successfully created a quote with available parts and pricing details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  partsFound:
+                    type: array
+                    description: List of parts that were found and included in the quote.
+                    items:
+                      type: object
+                      properties:
+                        customerKey:
+                          type: string
+                          description: Unique key assigned to the customer request.
+                          example: QuoteV-P-All
+                        partCatalog:
+                          type: string
+                          description: 'Catalog type of the part (e.g., OEM, New Aftermarket, Used, etc.).'
+                          example: New Aftermarket
+                        coreValue:
+                          type: number
+                          description: 'Core charge value, if applicable.'
+                          example: 0
+                        customerPrice:
+                          type: number
+                          description: Price offered to the customer for the part.
+                          example: 320
+                        tax:
+                          type: number
+                          description: Applicable tax for the part.
+                          example: 0
+                        shippingPrice:
+                          type: number
+                          description: Cost of shipping for the part.
+                          example: 70
+                        shippingType:
+                          type: string
+                          description: Selected shipping method.
+                          example: Next Day Air Freight
+                        deliveryDateCutoffUTC:
+                          type: string
+                          format: date-time
+                          description: Cutoff time for order processing in UTC format.
+                          example: '2025-02-11 19:00'
+                        description:
+                          type: string
+                          description: Name or description of the part.
+                          example: A/C Compressor
+                        listPrice:
+                          type: number
+                          description: Standard list price of the part.
+                          example: 320
+                        totalPrice:
+                          type: number
+                          description: 'Total cost including part price, shipping, and tax.'
+                          example: 409.2
+                        partRequested:
+                          type: object
+                          description: Details of the originally requested part.
+                          properties:
+                            searchType:
+                              type: string
+                              description: Type of part requested.
+                              example: A/C Compressor
+                            partNumber:
+                              type: string
+                              description: Identifying number for the part.
+                              example: '86798574'
+                            key:
+                              type: string
+                              description: Unique key for the request.
+                              example: QuoteV-P-All
+                        quotedPartNumber:
+                          type: string
+                          description: Part number assigned to the quoted item.
+                          example: 13103-1415A
+                        quoteId:
+                          type: string
+                          description: Internal identifier for the quote request.
+                          example: '43991'
+                        quoteNo:
+                          type: string
+                          description: Public-facing quote number.
+                          example: AQ10002799
+                        resourceUrls:
+                          type: array
+                          description: List of URLs with additional details about the quoted part.
+                          items:
+                            type: object
+                            properties:
+                              url:
+                                type: string
+                                description: Direct link to the quoted part details.
+                                example: 'http://tealpartssandbox.apapmt.com/Home/PartDetail?KEY=QVExMDAwMjc5OQ=='
+                              description:
+                                type: string
+                                description: Additional details about the resource.
+                                example: ''
+                              type:
+                                type: string
+                                description: Resource type.
+                                example: ''
+                        warranty:
+                          type: object
+                          description: Warranty coverage details for the part.
+                          properties:
+                            warrantyId:
+                              type: integer
+                              description: Identifier for the warranty option.
+                              example: 6
+                            warrantyDisplayName:
+                              type: string
+                              description: Display name for the warranty coverage.
+                              example: 12/12 Parts & Labor Warranty
+                            warrantyDescription:
+                              type: string
+                              description: Detailed warranty information.
+                              example: 12/12 Parts & Labor Warranty
+                            warrantyPrice:
+                              type: number
+                              description: Cost of the selected warranty option.
+                              example: 19.2
+                  errorMessage:
+                    type: string
+                    description: Message indicating the success or failure of the request.
+                    example: success
+              examples:
+                Example 1:
+                  value:
+                    partsFound:
+                      - customerKey: QuoteV-P-All
+                        partCatalog: New Aftermarket
+                        coreValue: 0
+                        customerPrice: 320
+                        tax: 0
+                        shippingPrice: 70
+                        shippingType: Next Day Air Freight
+                        deliveryDateCutoffUTC: '2025-02-11 19:00'
+                        description: A/C Compressor
+                        listPrice: 320
+                        totalPrice: 409.2
+                        partRequested:
+                          searchType: A/C Compressor
+                          partNumber: '86798574'
+                          key: QuoteV-P-All
+                        quotedPartNumber: 13103-1415A
+                        quoteId: '43991'
+                        quoteNo: AQ10002799
+                        resourceUrls:
+                          - url: 'http://tealpartssandbox.apapmt.com/Home/PartDetail?KEY=QVExMDAwMjc5OQ=='
+                            description: ''
+                            type: ''
+                        warranty:
+                          warrantyId: 6
+                          warrantyDisplayName: 12/12 Parts & Labor Warranty
+                          warrantyDescription: 12/12 Parts & Labor Warranty
+                          warrantyPrice: 19.2
+                    errorMessage: success
+      tags:
+        - Quote
+  /api/Quote/GetQuote:
+    post:
+      summary: Retrieve a quote based on a quote number
+      description: 'Fetches the details of a previously created quote, including part information, pricing, shipping details, and warranty.'
+      operationId: getQuote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quoteNo:
+                  type: string
+                  description: The unique identifier of the quote to retrieve.
+                  example: AQ10002799
+            examples:
+              Example 1:
+                value:
+                  quoteNo: AQ10002799
+      responses:
+        '200':
+          description: Successfully retrieved the quote details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  partsFound:
+                    type: array
+                    description: List of parts included in the quote.
+                    items:
+                      type: object
+                      properties:
+                        customerKey:
+                          type: string
+                          description: Unique key assigned to the customer request.
+                          example: QuoteV-P-All
+                        partCatalog:
+                          type: string
+                          description: 'Catalog type of the part (e.g., OEM, New Aftermarket, Used, etc.).'
+                          example: New Aftermarket
+                        coreValue:
+                          type: number
+                          description: 'Core charge value, if applicable.'
+                          example: 0
+                        customerPrice:
+                          type: number
+                          description: Price offered to the customer for the part.
+                          example: 320
+                        tax:
+                          type: number
+                          description: Applicable tax for the part.
+                          example: 0
+                        shippingPrice:
+                          type: number
+                          description: Cost of shipping for the part.
+                          example: 70
+                        shippingType:
+                          type: string
+                          description: Selected shipping method.
+                          example: Next Day Air Freight
+                        deliveryDateCutoffUTC:
+                          type: string
+                          format: date-time
+                          description: Cutoff time for order processing in UTC format.
+                          example: '2025-02-11 19:00'
+                        description:
+                          type: string
+                          description: Name or description of the part.
+                          example: A/C Compressor
+                        quotedPartNumber:
+                          type: string
+                          description: Part number assigned to the quoted item.
+                          example: 13103-1415A
+                        quoteId:
+                          type: string
+                          description: Internal identifier for the quote request.
+                          example: '43991'
+                        quoteNo:
+                          type: string
+                          description: Public-facing quote number.
+                          example: AQ10002799
+                        warranty:
+                          type: object
+                          description: Warranty coverage details for the part.
+                          properties:
+                            warrantyId:
+                              type: integer
+                              description: Identifier for the warranty option.
+                              example: 6
+                            warrantyDisplayName:
+                              type: string
+                              description: Display name for the warranty coverage.
+                              example: 12/12 Parts & Labor Warranty
+                            warrantyDescription:
+                              type: string
+                              description: Detailed warranty information.
+                              example: 12/12 Parts & Labor Warranty
+                            warrantyPrice:
+                              type: number
+                              description: Cost of the selected warranty option.
+                              example: 19.2
+                  errorMessage:
+                    type: string
+                    description: Message indicating the success or failure of the request.
+                    example: success
+              examples:
+                Example 1:
+                  value:
+                    partsFound:
+                      - customerKey: QuoteV-P-All
+                        partCatalog: New Aftermarket
+                        coreValue: 0
+                        customerPrice: 320
+                        tax: 0
+                        shippingPrice: 70
+                        shippingType: Next Day Air Freight
+                        deliveryDateCutoffUTC: '2025-02-11 19:00'
+                        description: A/C Compressor
+                        quotedPartNumber: 13103-1415A
+                        quoteId: '43991'
+                        quoteNo: AQ10002799
+                        warranty:
+                          warrantyId: 6
+                          warrantyDisplayName: 12/12 Parts & Labor Warranty
+                          warrantyDescription: 12/12 Parts & Labor Warranty
+                          warrantyPrice: 19.2
+                    errorMessage: success
+      tags:
+        - Quote
+  /api/Order/GetOrder:
+    post:
+      summary: Retrieve an order by order number
+      description: 'Fetches the details of a previously placed order, including part information, pricing, shipping details, and warranty.'
+      operationId: getOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderNo:
+                  type: string
+                  description: The unique identifier of the order to retrieve.
+                  example: ATQ100253
+      responses:
+        '200':
+          description: Successfully retrieved the order details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                    description: Unique identifier for the order.
+                    example: '1467'
+                  orderNo:
+                    type: string
+                    description: The order number associated with the request.
+                    example: ATQ100253
+                  orderStatus:
+                    type: string
+                    description: The current status of the order.
+                    example: Completed
+                  totalOrderCost:
+                    type: number
+                    description: The total cost of the order including all parts and shipping.
+                    example: 402.8
+                  totalOrderTax:
+                    type: number
+                    description: The total tax applied to the order.
+                    example: 0
+                  partsOrdered:
+                    type: array
+                    description: List of parts included in the order.
+                    items:
+                      type: object
+                      properties:
+                        customerKey:
+                          type: string
+                          description: Unique key assigned to the customer request.
+                          example: Quote
+                        partCatalog:
+                          type: string
+                          description: 'Catalog type of the part (e.g., OEM, New Aftermarket, Used, etc.).'
+                          example: New Aftermarket
+                        coreValue:
+                          type: number
+                          description: 'Core charge value, if applicable.'
+                          example: 0
+                        customerPrice:
+                          type: number
+                          description: Price offered to the customer for the part.
+                          example: 320
+                        tax:
+                          type: number
+                          description: Applicable tax for the part.
+                          example: 0
+                        shippingPrice:
+                          type: number
+                          description: Cost of shipping for the part.
+                          example: 70
+                        shippingType:
+                          type: string
+                          description: Selected shipping method.
+                          example: Next Day Air Freight
+                        deliveryDateCutoffUTC:
+                          type: string
+                          format: date-time
+                          description: Cutoff time for order processing in UTC format.
+                          example: '2025-02-10 19:00'
+                        description:
+                          type: string
+                          description: Name or description of the part.
+                          example: A/C Compressor
+                        quotedPartNumber:
+                          type: string
+                          description: Part number assigned to the ordered item.
+                          example: 13103-1415A
+                        quoteId:
+                          type: string
+                          description: Internal identifier for the quote request.
+                          example: '43666'
+                        quoteNo:
+                          type: string
+                          description: Public-facing quote number.
+                          example: AQ10002478
+                        warranty:
+                          type: object
+                          description: Warranty coverage details for the part.
+                          properties:
+                            warrantyId:
+                              type: integer
+                              description: Identifier for the warranty option.
+                              example: 4
+                            warrantyDisplayName:
+                              type: string
+                              description: Display name for the warranty coverage.
+                              example: 12/12 Parts & Labor Warranty
+                            warrantyDescription:
+                              type: string
+                              description: Detailed warranty information.
+                              example: 12/12 Parts & Labor Warranty
+                            warrantyPrice:
+                              type: number
+                              description: Cost of the selected warranty option.
+                              example: 12.8
+                  partsNotOrdered:
+                    type: array
+                    description: List of parts that were not included in the order.
+                    items:
+                      type: object
+                  errorMessage:
+                    type: string
+                    description: Message indicating the success or failure of the request.
+                    example: success
+      tags:
+        - Order
+components:
+  schemas: {}
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
