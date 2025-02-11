@@ -1,10 +1,7 @@
 openapi: 3.1.0
 info:
-  title: tealparts
+  title: API Documentation
   version: '1.0'
-  x-logo:
-    url: 'https://tealparts.com/Content/images/teal_parts_logo.png'
-    altText: Teal Parts
   description: |-
     ## **Welcome to TealParts**
 
