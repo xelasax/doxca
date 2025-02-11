@@ -1,9 +1,10 @@
 openapi: 3.1.0
-x-stoplight:
-  id: 5v6p46wtboa4i
 info:
   title: tealparts
   version: '1.0'
+  x-logo:
+    url: 'https://tealparts.com/Content/images/teal_parts_logo.png'
+    altText: Teal Parts
   description: |-
     ## **Welcome to TealParts**
 
@@ -159,6 +160,68 @@ paths:
                     succeeded: false
         '500':
           description: Internal server error - Unexpected issue occurred on the server.
+  /api/identity/token/refresh:
+    post:
+      summary: Refresh authentication token
+      description: Refreshes the authentication token using a valid refresh token.
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The expired or soon-to-expire JWT access token.
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                refreshToken:
+                  type: string
+                  description: The refresh token used to obtain a new access token.
+                  example: p8NWsPNIfvKGY2zdrQqYTDJF5oXKh3E74zLHUhvq6hA=
+              required:
+                - token
+                - refreshToken
+      responses:
+        '200':
+          description: Successfully refreshed the token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        description: The new JWT access token.
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                      refreshToken:
+                        type: string
+                        description: The new refresh token.
+                        example: DKTUc4Av1L4j/Um+I3IppXrO/8Gu4cVB9qx5BGH6wJY=
+                      refreshTokenExpiryTime:
+                        type: string
+                        format: date-time
+                        description: The expiration timestamp of the new refresh token.
+                        example: '2025-02-17T16:15:24.8973864'
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                  succeeded:
+                    type: boolean
+                    example: true
+        '400':
+          description: 'Bad request, invalid input.'
+        '401':
+          description: 'Unauthorized, invalid or expired refresh token.'
+        '500':
+          description: Internal server error.
+      tags:
+        - Authentication
   /api/Quote/CreateQuoteSimple:
     post:
       summary: Simple Quote
